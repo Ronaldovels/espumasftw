@@ -2,7 +2,7 @@ export type MatchTeam = {
   id: string;
   name: string;
   tag: string;
-  crest: "espumas" | "esponjas";
+  crest: "espumas" | "esponjas" | "buchas" | "loucas" | "molhados";
 };
 
 export type MatchPlayer = {
@@ -32,12 +32,15 @@ export type MatchMap = {
   score: [number, number];
   durationSeconds: number;
   stats: MapPlayerStats[];
+  sourceUrl?: string;
+  uncreditedDeaths?: Array<{ playerId: string; count: number; reason: string }>;
 };
 
 export type ValorantMatch = {
   id: string;
   date: string;
   event: string;
+  format?: "Competitiva" | "Personalizada";
   sourceUrl: string;
   contextUrl: string;
   ratingNote: string;

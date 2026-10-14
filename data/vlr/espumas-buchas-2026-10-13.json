@@ -1,0 +1,229 @@
+{
+  "id": "espumas-buchas-2026-10-13",
+  "date": "2026-10-13",
+  "event": "Competitiva · Lotus",
+  "format": "Competitiva",
+  "sourceUrl": "https://tracker.gg/valorant/match/1bd9f7bd-399b-4a51-83d4-77be0fe290b6",
+  "contextUrl": "https://tracker.gg/valorant/profile/riot/intertwined%23anaju/overview?platform=pc&playlist=competitive&season=d816f426-48ea-f052-117f-9697a155b319",
+  "ratingNote": "Rating Espumas v1: estimativa calibrada com ratings VLR 2.0. Usa kills, deaths, assistências e primeiras mortes por round, ADR e ACS. O mesmo modelo é usado no perfil de cada jogador; contribuições brutas são ponderadas pelos rounds antes do arredondamento final.",
+  "teams": [
+    {
+      "id": "espumas",
+      "name": "Espumas",
+      "tag": "ESP",
+      "crest": "espumas"
+    },
+    {
+      "id": "buchas",
+      "name": "Buchas",
+      "tag": "BUC",
+      "crest": "buchas"
+    }
+  ],
+  "players": [
+    {
+      "id": "intertwined",
+      "name": "intertwined",
+      "riotId": "intertwined#anaju",
+      "teamId": "espumas"
+    },
+    {
+      "id": "vls",
+      "name": "vls",
+      "riotId": "vls#det",
+      "teamId": "espumas"
+    },
+    {
+      "id": "maopyk",
+      "name": "Maopyk",
+      "riotId": "Maopyk#piru",
+      "teamId": "espumas"
+    },
+    {
+      "id": "felpao",
+      "name": "Felpao",
+      "riotId": "Felpao#000",
+      "teamId": "espumas"
+    },
+    {
+      "id": "laszo",
+      "name": "lsz",
+      "riotId": "lsz#333",
+      "teamId": "espumas"
+    },
+    {
+      "id": "buchas-1",
+      "name": "mikumero",
+      "riotId": "mikumero#fort",
+      "teamId": "buchas"
+    },
+    {
+      "id": "buchas-2",
+      "name": "TЯEXX",
+      "riotId": "TЯEXX#7777",
+      "teamId": "buchas"
+    },
+    {
+      "id": "buchas-3",
+      "name": "Maquina de HS",
+      "riotId": "Maquina de HS#MAT",
+      "teamId": "buchas"
+    },
+    {
+      "id": "buchas-4",
+      "name": "Henricão",
+      "riotId": "Henricão#Newba",
+      "teamId": "buchas"
+    },
+    {
+      "id": "buchas-5",
+      "name": "CaioTM",
+      "riotId": "CaioTM#6969",
+      "teamId": "buchas"
+    }
+  ],
+  "maps": [
+    {
+      "id": "lotus",
+      "name": "Lotus",
+      "score": [
+        13,
+        9
+      ],
+      "durationSeconds": 1948,
+      "sourceUrl": "https://tracker.gg/valorant/match/1bd9f7bd-399b-4a51-83d4-77be0fe290b6",
+      "stats": [
+        {
+          "playerId": "intertwined",
+          "agent": "Chamber",
+          "acs": 378,
+          "kills": 31,
+          "deaths": 8,
+          "assists": 3,
+          "kast": 86,
+          "adr": 233.6,
+          "hs": 49,
+          "fk": 6,
+          "fd": 3
+        },
+        {
+          "playerId": "vls",
+          "agent": "Neon",
+          "acs": 272,
+          "kills": 22,
+          "deaths": 14,
+          "assists": 5,
+          "kast": 86,
+          "adr": 158.9,
+          "hs": 27,
+          "fk": 3,
+          "fd": 0
+        },
+        {
+          "playerId": "maopyk",
+          "agent": "Omen",
+          "acs": 203,
+          "kills": 14,
+          "deaths": 13,
+          "assists": 13,
+          "kast": 82,
+          "adr": 127,
+          "hs": 29,
+          "fk": 1,
+          "fd": 2
+        },
+        {
+          "playerId": "felpao",
+          "agent": "Breach",
+          "acs": 184,
+          "kills": 16,
+          "deaths": 12,
+          "assists": 10,
+          "kast": 82,
+          "adr": 117.9,
+          "hs": 28,
+          "fk": 1,
+          "fd": 2
+        },
+        {
+          "playerId": "laszo",
+          "agent": "Fade",
+          "acs": 125,
+          "kills": 9,
+          "deaths": 13,
+          "assists": 12,
+          "kast": 73,
+          "adr": 82.6,
+          "hs": 19,
+          "fk": 2,
+          "fd": 2
+        },
+        {
+          "playerId": "buchas-1",
+          "agent": "Waylay",
+          "acs": 210,
+          "kills": 15,
+          "deaths": 19,
+          "assists": 4,
+          "kast": 55,
+          "adr": 131.9,
+          "hs": 29,
+          "fk": 4,
+          "fd": 6
+        },
+        {
+          "playerId": "buchas-2",
+          "agent": "Chamber",
+          "acs": 199,
+          "kills": 16,
+          "deaths": 17,
+          "assists": 2,
+          "kast": 59,
+          "adr": 125.5,
+          "hs": 27,
+          "fk": 3,
+          "fd": 1
+        },
+        {
+          "playerId": "buchas-3",
+          "agent": "Omen",
+          "acs": 194,
+          "kills": 17,
+          "deaths": 18,
+          "assists": 4,
+          "kast": 68,
+          "adr": 123.5,
+          "hs": 45,
+          "fk": 1,
+          "fd": 2
+        },
+        {
+          "playerId": "buchas-4",
+          "agent": "Fade",
+          "acs": 111,
+          "kills": 8,
+          "deaths": 18,
+          "assists": 7,
+          "kast": 59,
+          "adr": 84.3,
+          "hs": 15,
+          "fk": 0,
+          "fd": 0
+        },
+        {
+          "playerId": "buchas-5",
+          "agent": "Phoenix",
+          "acs": 92,
+          "kills": 4,
+          "deaths": 20,
+          "assists": 7,
+          "kast": 45,
+          "adr": 69,
+          "hs": 18,
+          "fk": 1,
+          "fd": 4
+        }
+      ]
+    }
+  ]
+}

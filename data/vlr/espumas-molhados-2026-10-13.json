@@ -1,0 +1,236 @@
+{
+  "id": "espumas-molhados-2026-10-13",
+  "date": "2026-10-13",
+  "event": "Competitiva · Abyss",
+  "format": "Competitiva",
+  "sourceUrl": "https://tracker.gg/valorant/match/98f02482-427c-42f2-9707-b895f125b275",
+  "contextUrl": "https://tracker.gg/valorant/profile/riot/intertwined%23anaju/overview?platform=pc&playlist=competitive&season=d816f426-48ea-f052-117f-9697a155b319",
+  "ratingNote": "Rating Espumas v1: estimativa calibrada com ratings VLR 2.0. Usa kills, deaths, assistências e primeiras mortes por round, ADR e ACS. O mesmo modelo é usado no perfil de cada jogador; contribuições brutas são ponderadas pelos rounds antes do arredondamento final.",
+  "teams": [
+    {
+      "id": "espumas",
+      "name": "Espumas",
+      "tag": "ESP",
+      "crest": "espumas"
+    },
+    {
+      "id": "molhados",
+      "name": "Molhados",
+      "tag": "MOL",
+      "crest": "molhados"
+    }
+  ],
+  "players": [
+    {
+      "id": "intertwined",
+      "name": "intertwined",
+      "riotId": "intertwined#anaju",
+      "teamId": "espumas"
+    },
+    {
+      "id": "maopyk",
+      "name": "Maopyk",
+      "riotId": "Maopyk#piru",
+      "teamId": "espumas"
+    },
+    {
+      "id": "felpao",
+      "name": "Felpao",
+      "riotId": "Felpao#000",
+      "teamId": "espumas"
+    },
+    {
+      "id": "vls",
+      "name": "vls",
+      "riotId": "vls#det",
+      "teamId": "espumas"
+    },
+    {
+      "id": "laszo",
+      "name": "lsz",
+      "riotId": "lsz#333",
+      "teamId": "espumas"
+    },
+    {
+      "id": "molhados-1",
+      "name": "sangras",
+      "riotId": "sangras#069",
+      "teamId": "molhados"
+    },
+    {
+      "id": "molhados-2",
+      "name": "Mete Reb0lando",
+      "riotId": "Mete Reb0lando#Aaah",
+      "teamId": "molhados"
+    },
+    {
+      "id": "molhados-3",
+      "name": "gordin rebaixado",
+      "riotId": "gordin rebaixado#690",
+      "teamId": "molhados"
+    },
+    {
+      "id": "molhados-4",
+      "name": "as bebê quer gin",
+      "riotId": "as bebê quer gin#000",
+      "teamId": "molhados"
+    },
+    {
+      "id": "molhados-5",
+      "name": "kakashisempai",
+      "riotId": "kakashisempai#0069",
+      "teamId": "molhados"
+    }
+  ],
+  "maps": [
+    {
+      "id": "abyss",
+      "name": "Abyss",
+      "score": [
+        15,
+        13
+      ],
+      "durationSeconds": 2807,
+      "sourceUrl": "https://tracker.gg/valorant/match/98f02482-427c-42f2-9707-b895f125b275",
+      "stats": [
+        {
+          "playerId": "intertwined",
+          "agent": "Chamber",
+          "acs": 268,
+          "kills": 27,
+          "deaths": 15,
+          "assists": 7,
+          "kast": 82,
+          "adr": 182.8,
+          "hs": 29,
+          "fk": 3,
+          "fd": 2
+        },
+        {
+          "playerId": "maopyk",
+          "agent": "Omen",
+          "acs": 245,
+          "kills": 22,
+          "deaths": 18,
+          "assists": 14,
+          "kast": 82,
+          "adr": 168.6,
+          "hs": 31,
+          "fk": 2,
+          "fd": 5
+        },
+        {
+          "playerId": "felpao",
+          "agent": "KAY/O",
+          "acs": 218,
+          "kills": 23,
+          "deaths": 17,
+          "assists": 9,
+          "kast": 79,
+          "adr": 129,
+          "hs": 29,
+          "fk": 1,
+          "fd": 3
+        },
+        {
+          "playerId": "vls",
+          "agent": "Neon",
+          "acs": 181,
+          "kills": 17,
+          "deaths": 22,
+          "assists": 5,
+          "kast": 64,
+          "adr": 112.2,
+          "hs": 20,
+          "fk": 5,
+          "fd": 3
+        },
+        {
+          "playerId": "laszo",
+          "agent": "Sova",
+          "acs": 161,
+          "kills": 16,
+          "deaths": 19,
+          "assists": 8,
+          "kast": 71,
+          "adr": 112.6,
+          "hs": 26,
+          "fk": 1,
+          "fd": 3
+        },
+        {
+          "playerId": "molhados-1",
+          "agent": "Jett",
+          "acs": 255,
+          "kills": 23,
+          "deaths": 26,
+          "assists": 6,
+          "kast": 64,
+          "adr": 163,
+          "hs": 20,
+          "fk": 7,
+          "fd": 5
+        },
+        {
+          "playerId": "molhados-2",
+          "agent": "Sova",
+          "acs": 215,
+          "kills": 20,
+          "deaths": 19,
+          "assists": 12,
+          "kast": 75,
+          "adr": 156,
+          "hs": 22,
+          "fk": 5,
+          "fd": 2
+        },
+        {
+          "playerId": "molhados-3",
+          "agent": "Miks",
+          "acs": 170,
+          "kills": 14,
+          "deaths": 21,
+          "assists": 11,
+          "kast": 71,
+          "adr": 121.8,
+          "hs": 21,
+          "fk": 1,
+          "fd": 3
+        },
+        {
+          "playerId": "molhados-4",
+          "agent": "Chamber",
+          "acs": 159,
+          "kills": 17,
+          "deaths": 18,
+          "assists": 2,
+          "kast": 64,
+          "adr": 112.8,
+          "hs": 33,
+          "fk": 3,
+          "fd": 1
+        },
+        {
+          "playerId": "molhados-5",
+          "agent": "Fade",
+          "acs": 146,
+          "kills": 16,
+          "deaths": 21,
+          "assists": 6,
+          "kast": 57,
+          "adr": 96.1,
+          "hs": 12,
+          "fk": 0,
+          "fd": 1
+        }
+      ],
+      "uncreditedDeaths": [
+        {
+          "playerId": "vls",
+          "count": 1,
+          "reason": "Morte sem eliminação adversária no round 23, conferida no log do Tracker."
+        }
+      ]
+    }
+  ]
+}

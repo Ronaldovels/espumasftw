@@ -29,7 +29,18 @@ for (const file of (await readdir(directory)).filter((file) => file.endsWith(".j
       assert(row.kast <= 100 && row.hs <= 100);
     }
     const teamStats = match.teams.map((team) => map.stats.filter((row) => match.players.find((player) => player.id === row.playerId).teamId === team.id));
-    for (const index of [0, 1]) assert.equal(teamStats[index].reduce((sum, row) => sum + row.kills, 0), teamStats[1 - index].reduce((sum, row) => sum + row.deaths, 0), `${map.name}: eliminações e mortes entre os times`);
+    const uncredited = map.uncreditedDeaths ?? [];
+    assert.equal(new Set(uncredited.map((entry) => entry.playerId)).size, uncredited.length, "Sem duplicar mortes sem crédito");
+    for (const entry of uncredited) {
+      const playerStats = map.stats.find((row) => row.playerId === entry.playerId);
+      assert(playerStats && Number.isInteger(entry.count) && entry.count > 0 && entry.count <= playerStats.deaths, "Morte sem crédito exige jogador e quantidade válidos");
+      assert(typeof entry.reason === "string" && entry.reason.length > 0, "Documentar no log a morte sem crédito");
+    }
+    for (const index of [0, 1]) {
+      const enemyIds = new Set(teamStats[1 - index].map((row) => row.playerId));
+      const noCredit = uncredited.filter((entry) => enemyIds.has(entry.playerId)).reduce((sum, entry) => sum + entry.count, 0);
+      assert.equal(teamStats[index].reduce((sum, row) => sum + row.kills, 0), teamStats[1 - index].reduce((sum, row) => sum + row.deaths, 0) - noCredit, `${map.name}: eliminações e mortes entre os times, descontando apenas eventos documentados`);
+    }
   }
   const rows = leaderboardRows(match);
   assert.equal(rows.length, 10);

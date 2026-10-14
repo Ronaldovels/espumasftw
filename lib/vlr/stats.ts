@@ -1,4 +1,4 @@
-import type { LeaderboardRow, ValorantMatch } from "./types";
+import type { LeaderboardRow, MapPlayerStats, ValorantMatch } from "./types";
 import { rawRating } from "./rating.mjs";
 
 export function seriesScore(match: ValorantMatch): [number, number] {
@@ -11,6 +11,25 @@ export function seriesScore(match: ValorantMatch): [number, number] {
 
 export function totalRounds(match: ValorantMatch): number {
   return match.maps.reduce((sum, map) => sum + map.score[0] + map.score[1], 0);
+}
+
+export function displayScore(match: ValorantMatch): [number, number] {
+  return match.maps.length === 1 ? match.maps[0].score : seriesScore(match);
+}
+
+export type StatEntry = { stats: MapPlayerStats; rounds: number };
+
+// Keep full map precision and weight raw contributions before rounding once.
+export function aggregateMapStats(entries: StatEntry[]) {
+  const rounds = entries.reduce((sum, entry) => sum + entry.rounds, 0);
+  if (!rounds) return null;
+  const sum = (key: "kills" | "deaths" | "assists" | "fk" | "fd") => entries.reduce((total, { stats }) => total + stats[key], 0);
+  const weighted = (key: "acs" | "adr" | "kast") => entries.reduce((total, entry) => total + entry.stats[key] * entry.rounds, 0) / rounds;
+  const raw = entries.reduce((total, entry) => total + rawRating({ ...entry.stats, rounds: entry.rounds }) * entry.rounds, 0) / rounds;
+  const kills = sum("kills"), deaths = sum("deaths"), assists = sum("assists"), fk = sum("fk"), fd = sum("fd");
+  return { rounds, kills, deaths, assists, fk, fd, rating: Math.round(Math.max(0, raw) * 100) / 100,
+    acs: weighted("acs"), adr: weighted("adr"), kast: weighted("kast"),
+    kd: deaths ? kills / deaths : null, kpr: kills / rounds, apr: assists / rounds, fkfd: fd ? fk / fd : null };
 }
 
 export function formatMatchDate(date: string, short = false): string {
@@ -35,20 +54,17 @@ export function leaderboardRows(match: ValorantMatch, mapId = "all"): Leaderboar
       return stats ? [{ stats, map, rounds: map.score[0] + map.score[1] }] : [];
     });
     if (!entries.length) return [];
-    const rounds = entries.reduce((sum, entry) => sum + entry.rounds, 0);
+    const aggregate = aggregateMapStats(entries)!;
     const recorded = mapId === "all" ? match.seriesStats?.[player.id] : undefined;
-    const sum = (key: "kills" | "deaths" | "assists" | "fk" | "fd") => entries.reduce((total, { stats }) => total + stats[key], 0);
-    const weighted = (key: "acs" | "adr" | "kast") => entries.reduce((total, entry) => total + entry.stats[key] * entry.rounds, 0) / rounds;
-    const rating = entries.reduce((total, entry) => total + rawRating({ ...entry.stats, rounds: entry.rounds }) * entry.rounds, 0) / rounds;
-    const kills = sum("kills"), deaths = sum("deaths"), fk = sum("fk"), fd = sum("fd");
+    const { kills, deaths, assists, fk, fd } = aggregate;
     return [{
       ...player,
       agents: [...new Set(entries.map(({ stats }) => stats.agent))],
       headshots: entries.map(({ stats, map }) => ({ map: map.name, value: stats.hs })),
-      rating: Math.round(Math.max(0, rating) * 100) / 100,
-      acs: recorded?.acs ?? Math.round(weighted("acs")),
-      kills, deaths, assists: sum("assists"), diff: kills - deaths,
-      kast: recorded?.kast ?? Math.round(weighted("kast")), adr: recorded?.adr ?? Math.round(weighted("adr")),
+      rating: aggregate.rating,
+      acs: recorded?.acs ?? Math.round(aggregate.acs),
+      kills, deaths, assists, diff: kills - deaths,
+      kast: recorded?.kast ?? Math.round(aggregate.kast), adr: recorded?.adr ?? Math.round(aggregate.adr),
       fk, fd, openingDiff: fk - fd,
     }];
   });

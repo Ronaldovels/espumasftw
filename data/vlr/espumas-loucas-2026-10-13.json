@@ -1,0 +1,229 @@
+{
+  "id": "espumas-loucas-2026-10-13",
+  "date": "2026-10-13",
+  "event": "Competitiva · Haven",
+  "format": "Competitiva",
+  "sourceUrl": "https://tracker.gg/valorant/match/9a24b53c-8225-4d87-b30b-6ced77fd572d",
+  "contextUrl": "https://tracker.gg/valorant/profile/riot/intertwined%23anaju/overview?platform=pc&playlist=competitive&season=d816f426-48ea-f052-117f-9697a155b319",
+  "ratingNote": "Rating Espumas v1: estimativa calibrada com ratings VLR 2.0. Usa kills, deaths, assistências e primeiras mortes por round, ADR e ACS. O mesmo modelo é usado no perfil de cada jogador; contribuições brutas são ponderadas pelos rounds antes do arredondamento final.",
+  "teams": [
+    {
+      "id": "espumas",
+      "name": "Espumas",
+      "tag": "ESP",
+      "crest": "espumas"
+    },
+    {
+      "id": "loucas",
+      "name": "Louças",
+      "tag": "LOU",
+      "crest": "loucas"
+    }
+  ],
+  "players": [
+    {
+      "id": "intertwined",
+      "name": "intertwined",
+      "riotId": "intertwined#anaju",
+      "teamId": "espumas"
+    },
+    {
+      "id": "maopyk",
+      "name": "Maopyk",
+      "riotId": "Maopyk#piru",
+      "teamId": "espumas"
+    },
+    {
+      "id": "vls",
+      "name": "vls",
+      "riotId": "vls#det",
+      "teamId": "espumas"
+    },
+    {
+      "id": "laszo",
+      "name": "lsz",
+      "riotId": "lsz#333",
+      "teamId": "espumas"
+    },
+    {
+      "id": "felpao",
+      "name": "Felpao",
+      "riotId": "Felpao#000",
+      "teamId": "espumas"
+    },
+    {
+      "id": "loucas-1",
+      "name": "黒足 Kuro Ashi",
+      "riotId": "黒足 Kuro Ashi#Sanji",
+      "teamId": "loucas"
+    },
+    {
+      "id": "loucas-2",
+      "name": "Lukzツ",
+      "riotId": "Lukzツ#1907",
+      "teamId": "loucas"
+    },
+    {
+      "id": "loucas-3",
+      "name": "PROFETA",
+      "riotId": "PROFETA#GGWP",
+      "teamId": "loucas"
+    },
+    {
+      "id": "loucas-4",
+      "name": "Chrome",
+      "riotId": "Chrome#kun",
+      "teamId": "loucas"
+    },
+    {
+      "id": "loucas-5",
+      "name": "Okita",
+      "riotId": "Okita#Sojin",
+      "teamId": "loucas"
+    }
+  ],
+  "maps": [
+    {
+      "id": "haven",
+      "name": "Haven",
+      "score": [
+        13,
+        5
+      ],
+      "durationSeconds": 1628,
+      "sourceUrl": "https://tracker.gg/valorant/match/9a24b53c-8225-4d87-b30b-6ced77fd572d",
+      "stats": [
+        {
+          "playerId": "intertwined",
+          "agent": "Chamber",
+          "acs": 363,
+          "kills": 24,
+          "deaths": 10,
+          "assists": 2,
+          "kast": 83,
+          "adr": 218.3,
+          "hs": 34,
+          "fk": 7,
+          "fd": 2
+        },
+        {
+          "playerId": "maopyk",
+          "agent": "Omen",
+          "acs": 259,
+          "kills": 18,
+          "deaths": 8,
+          "assists": 8,
+          "kast": 83,
+          "adr": 171.3,
+          "hs": 28,
+          "fk": 1,
+          "fd": 0
+        },
+        {
+          "playerId": "vls",
+          "agent": "Neon",
+          "acs": 243,
+          "kills": 14,
+          "deaths": 13,
+          "assists": 7,
+          "kast": 67,
+          "adr": 169.1,
+          "hs": 17,
+          "fk": 1,
+          "fd": 2
+        },
+        {
+          "playerId": "laszo",
+          "agent": "Sova",
+          "acs": 135,
+          "kills": 9,
+          "deaths": 11,
+          "assists": 4,
+          "kast": 67,
+          "adr": 101.5,
+          "hs": 26,
+          "fk": 1,
+          "fd": 1
+        },
+        {
+          "playerId": "felpao",
+          "agent": "Breach",
+          "acs": 120,
+          "kills": 7,
+          "deaths": 9,
+          "assists": 5,
+          "kast": 72,
+          "adr": 81.3,
+          "hs": 21,
+          "fk": 1,
+          "fd": 2
+        },
+        {
+          "playerId": "loucas-1",
+          "agent": "Neon",
+          "acs": 263,
+          "kills": 16,
+          "deaths": 14,
+          "assists": 4,
+          "kast": 61,
+          "adr": 172.9,
+          "hs": 30,
+          "fk": 2,
+          "fd": 2
+        },
+        {
+          "playerId": "loucas-2",
+          "agent": "Chamber",
+          "acs": 205,
+          "kills": 12,
+          "deaths": 13,
+          "assists": 4,
+          "kast": 61,
+          "adr": 126.7,
+          "hs": 23,
+          "fk": 4,
+          "fd": 3
+        },
+        {
+          "playerId": "loucas-3",
+          "agent": "Sova",
+          "acs": 171,
+          "kills": 12,
+          "deaths": 15,
+          "assists": 3,
+          "kast": 67,
+          "adr": 102.5,
+          "hs": 20,
+          "fk": 0,
+          "fd": 2
+        },
+        {
+          "playerId": "loucas-4",
+          "agent": "Cypher",
+          "acs": 111,
+          "kills": 6,
+          "deaths": 15,
+          "assists": 5,
+          "kast": 50,
+          "adr": 80.2,
+          "hs": 10,
+          "fk": 1,
+          "fd": 3
+        },
+        {
+          "playerId": "loucas-5",
+          "agent": "Omen",
+          "acs": 73,
+          "kills": 5,
+          "deaths": 15,
+          "assists": 5,
+          "kast": 44,
+          "adr": 45.2,
+          "hs": 19,
+          "fk": 0,
+          "fd": 1
+        }
+      ]
+    }
+  ]
+}
