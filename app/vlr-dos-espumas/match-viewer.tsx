@@ -6,6 +6,7 @@ import { useRef, useState, type KeyboardEvent } from "react";
 import agents from "@/app/agents.json";
 import { displayScore, formatDuration, formatMatchDate, leaderboardRows, totalRounds } from "@/lib/vlr/stats";
 import { RATING_VALIDATION } from "@/lib/vlr/rating.mjs";
+import { PLAYER_AVATARS } from "@/lib/vlr/players";
 import type { LeaderboardRow, MatchTeam, SortColumn, ValorantMatch } from "@/lib/vlr/types";
 import styles from "./vlr.module.css";
 
@@ -88,7 +89,10 @@ export function MatchViewer({ match }: { match: ValorantMatch }) {
                   <caption className={styles.srOnly}>{team.name} · {title} · {rounds} rounds</caption>
                   <thead><tr><th scope="col" className={styles.playerColumn}>Jogador</th><th scope="col" className={styles.agentColumn}>Agentes</th>{column("rating", "R*", "rating estimado")}{column("acs", "ACS", "pontuação média de combate")}{column("kills", "K", "eliminações")}{column("deaths", "D", "mortes")}{column("assists", "A", "assistências")}{column("diff", "+/−", "saldo de eliminações e mortes")}{column("kast", "KAST", "KAST")}{column("adr", "ADR", "dano médio por round")}<th scope="col" title={activeMap === "all" ? `HS% de cada mapa, na ordem ${match.maps.map((map) => map.name).join(" / ")}` : "Percentual de headshots"}>HS%</th>{column("fk", "FK", "primeiras eliminações")}{column("fd", "FD", "primeiras mortes")}{column("openingDiff", "+/−", "saldo de primeiras eliminações e mortes")}</tr></thead>
                   <tbody>{players.map((row) => <tr key={row.id}>
-                    <th scope="row" className={styles.playerCell}><Link href={`/vlr-dos-espumas/jogadores/${row.id}`} title={row.riotId ? `${row.name} · ${row.riotId}` : row.name}><strong>{row.name}</strong></Link><small>{team.tag}</small></th>
+                    <th scope="row" className={styles.playerCell}><div className={styles.playerIdentity}>
+                      {PLAYER_AVATARS[row.id] && <Image src={PLAYER_AVATARS[row.id]} alt="" width={36} height={36} unoptimized className={styles.leaderboardAvatar} />}
+                      <div><Link href={`/vlr-dos-espumas/jogadores/${row.id}`} title={row.riotId ? `${row.name} · ${row.riotId}` : row.name}><strong>{row.name}</strong></Link><small>{team.tag}</small></div>
+                    </div></th>
                     <td className={styles.agentsCell}><AgentPortraits row={row} /></td>
                     <td><span className={`${styles.statValue} ${styles.rating} ${row.rating >= 1.2 ? styles.highRating : row.rating < 0.85 ? styles.lowRating : ""}`}>{row.rating.toFixed(2)}</span></td>
                     <td><span className={styles.statValue}>{row.acs}</span></td>

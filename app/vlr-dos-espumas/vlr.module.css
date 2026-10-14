@@ -105,7 +105,7 @@
 .tableScroll { overflow-x: auto; scrollbar-width: thin; scrollbar-color: #adb4b9 #e3e6e8; }
 .statsTable { width: 100%; min-width: 825px; border-collapse: separate; border-spacing: 4px 5px; font-size: 11px; table-layout: auto; font-variant-numeric: tabular-nums; }
 .statsTable thead th { color: #7b8187; font-size: 10px; font-weight: 400; text-align: center; white-space: nowrap; padding: 0; }
-.statsTable thead th.playerColumn { text-align: left; width: 132px; padding-left: 6px; }
+.statsTable thead th.playerColumn { text-align: left; width: 176px; padding-left: 6px; }
 .statsTable thead th.agentColumn { width: 75px; text-align: left; }
 .statsTable thead button { display: inline-flex; align-items: center; justify-content: center; min-height: 25px; gap: 2px; padding: 2px 0; width: 100%; border: 0; background: transparent; color: inherit; font-size: inherit; }
 .statsTable thead button:hover, .statsTable thead button.sortedColumn { color: #384c5a; }
@@ -113,6 +113,9 @@
 .statsTable tbody td { padding: 0; text-align: center; }
 .statsTable tbody tr:hover { background: #e5ecf0; }
 .playerCell { position: sticky; left: 0; z-index: 1; background: #f1f1f2; text-align: left; padding: 3px 6px; font-weight: 400; }
+.playerIdentity { display: flex; align-items: center; gap: 8px; }
+.leaderboardAvatar { width: 36px; height: 36px; flex-shrink: 0; object-fit: contain; border-radius: 3px; background: #e0e1e3; }
+.avatarImage { display: block; width: 100%; height: 100%; object-fit: contain; background: #e0e1e3; }
 .statsTable tbody tr:hover .playerCell { background: #e5ecf0; }
 .playerCell strong { display: block; color: var(--vlr-blue); font-weight: 700; font-size: 12px; white-space: nowrap; }
 .playerCell small { display: block; margin-top: 3px; color: #8a9197; font-size: 10px; line-height: 1; }

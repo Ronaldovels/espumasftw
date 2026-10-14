@@ -6,6 +6,7 @@ import { useState } from "react";
 import agents from "@/app/agents.json";
 import { aggregateMapStats, formatMatchDate } from "@/lib/vlr/stats";
 import { playerAgentRows, recordsInPeriod, type PlayerMapRecord } from "@/lib/vlr/player-stats";
+import { PLAYER_AVATARS } from "@/lib/vlr/players";
 import type { MatchPlayer } from "@/lib/vlr/types";
 import styles from "./vlr.module.css";
 
@@ -34,7 +35,9 @@ export function PlayerViewer({ player, records, asOf }: { player: MatchPlayer; r
 
   return <>
     <section className={styles.profileHeader} aria-labelledby="player-title">
-      <div className={styles.playerAvatar} aria-hidden="true">{player.name.slice(0, 2).toUpperCase()}</div>
+      <div className={styles.playerAvatar} aria-hidden="true">{PLAYER_AVATARS[player.id]
+        ? <Image src={PLAYER_AVATARS[player.id]} alt="" width={94} height={110} unoptimized className={styles.avatarImage} />
+        : player.name.slice(0, 2).toUpperCase()}</div>
       <div><span className={styles.profileEyebrow}>{player.teamId === "espumas" ? "ESPUMAS" : "JOGADOR REGISTRADO"}</span><h1 id="player-title">{player.name}</h1>
         {player.riotId && <><p className={styles.riotId}>{player.riotId}</p><a className={styles.trackerLink} href={`https://tracker.gg/valorant/profile/riot/${encodeURIComponent(player.riotId)}/overview`} target="_blank" rel="noreferrer">Perfil no Tracker ↗</a></>}
         <p className={styles.profileContext}>{records.length} mapas no histórico · Último jogo em {formatMatchDate(records[0].date, true)}</p>
