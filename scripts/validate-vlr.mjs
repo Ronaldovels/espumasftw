@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
-import { leaderboardRows, seriesScore, totalRounds } from "../lib/vlr/stats.ts";
+import { firstHalfAttackers, leaderboardRows, roundTimeline, seriesScore, totalRounds } from "../lib/vlr/stats.ts";
 
 const directory = new URL("../data/vlr/", import.meta.url);
 const agents = JSON.parse(await readFile(new URL("../app/agents.json", import.meta.url), "utf8"));
@@ -27,6 +27,20 @@ for (const file of (await readdir(directory)).filter((file) => file.endsWith(".j
       for (const key of ["acs", "kills", "deaths", "assists", "kast", "adr", "hs", "fk", "fd"]) assert(Number.isFinite(row[key]) && row[key] >= 0, `${map.name} ${row.playerId}: ${key}`);
       assert(!("rating" in row), "Rating calculado não deve ser duplicado nos dados de entrada");
       assert(row.kast <= 100 && row.hs <= 100);
+    }
+    if (map.rounds) {
+      assert.equal(map.rounds.length, map.score[0] + map.score[1], `${map.name}: um registro por round`);
+      const running = [0, 0];
+      map.rounds.forEach((round, index) => {
+        const winner = match.teams.findIndex((team) => team.id === round.winner);
+        assert(winner >= 0, `${map.name} round ${index + 1}: vencedor desconhecido`);
+        assert(["elimination", "defuse", "detonate", "time"].includes(round.outcome), `${map.name} round ${index + 1}: desfecho desconhecido`);
+        running[winner]++;
+        const decided = Math.max(...running) >= 13 && Math.abs(running[0] - running[1]) >= 2;
+        assert.equal(decided, index === map.rounds.length - 1, `${map.name} round ${index + 1}: o mapa só termina no último round`);
+      });
+      assert.deepEqual(running, map.score, `${map.name}: rounds batem com o placar`);
+      assert(firstHalfAttackers(match, map).size <= 1, `${map.name}: plantas e desarmes indicam lados consistentes`);
     }
     const teamStats = match.teams.map((team) => map.stats.filter((row) => match.players.find((player) => player.id === row.playerId).teamId === team.id));
     const uncredited = map.uncreditedDeaths ?? [];
@@ -55,6 +69,10 @@ for (const file of (await readdir(directory)).filter((file) => file.endsWith(".j
     for (const [mapId, playerId, agent] of [["ascent", "vls", "Jett"], ["split", "persa-faz-22", "Raze"], ["summit", "israel-games", "Breach"]]) {
       assert.deepEqual(leaderboardRows(match, mapId).find((row) => row.id === playerId).agents, [agent]);
     }
+    const [ascent, split, summit] = match.maps.map((map) => roundTimeline(match, map));
+    assert.deepEqual([ascent[0].winnerSide, ascent[12].winner, ascent[12].winnerSide], ["attack", "espumas", "defense"], "Espumas começou no ataque em Ascent");
+    assert.deepEqual([split[2].winner, split[2].outcome, split[2].winnerSide], ["esponjas", "detonate", "attack"]);
+    assert.deepEqual(summit.slice(24).map((round) => round.winnerSide), ["defense", "defense", "defense", "attack"], "Prorrogação alterna os lados a cada round");
   }
   console.log(`${match.id}: dados, agentes, placares e totais conferidos.`);
 }

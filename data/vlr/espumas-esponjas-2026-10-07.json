@@ -142,6 +142,84 @@
         6
       ],
       "durationSeconds": 1966,
+      "rounds": [
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        }
+      ],
       "stats": [
         {
           "playerId": "vls",
@@ -283,6 +361,104 @@
         11
       ],
       "durationSeconds": 2583,
+      "rounds": [
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "detonate"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "detonate"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        }
+      ],
       "stats": [
         {
           "playerId": "intertwined",
@@ -424,6 +600,120 @@
         13
       ],
       "durationSeconds": 2926,
+      "rounds": [
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "detonate"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        }
+      ],
       "stats": [
         {
           "playerId": "vls",

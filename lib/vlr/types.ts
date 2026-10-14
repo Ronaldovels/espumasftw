@@ -26,11 +26,30 @@ export type MapPlayerStats = {
   fd: number;
 };
 
+export type RoundOutcome = "elimination" | "defuse" | "detonate" | "time";
+
+export type MatchRound = {
+  winner: string;
+  outcome: RoundOutcome;
+};
+
+// Compact transcription of the Tracker "Rounds" tab; format documented in scripts/tracker-rounds-extractor.js.
+export type TrackerRounds = {
+  url: string;
+  matchId: string;
+  map: string;
+  players: string[];
+  rounds: string[];
+  positions?: string[];
+};
+
 export type MatchMap = {
   id: string;
   name: string;
   score: [number, number];
   durationSeconds: number;
+  rounds?: MatchRound[];
+  tracker?: TrackerRounds;
   stats: MapPlayerStats[];
   sourceUrl?: string;
   uncreditedDeaths?: Array<{ playerId: string; count: number; reason: string }>;
@@ -56,6 +75,14 @@ export type LeaderboardRow = MatchPlayer & Omit<MapPlayerStats, "playerId" | "ag
   headshots: Array<{ map: string; value: number }>;
   diff: number;
   openingDiff: number;
+};
+
+export type RoundSide = "attack" | "defense";
+
+export type TimelineRound = MatchRound & {
+  number: number;
+  winnerIndex: 0 | 1;
+  winnerSide?: RoundSide;
 };
 
 export type SortColumn = "rating" | "acs" | "kills" | "deaths" | "assists" | "diff" | "kast" | "adr" | "fk" | "fd" | "openingDiff";

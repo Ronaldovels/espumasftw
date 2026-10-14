@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { matches, formatMatchDate } from "@/lib/vlr/matches";
+import { matches, formatMatchDate, withTrackerRounds } from "@/lib/vlr/matches";
 import { MatchPage } from "../match-page";
 
 export function generateStaticParams() {
@@ -17,5 +17,5 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ ma
   const { matchId } = await params;
   const match = matches.find((entry) => entry.id === matchId);
   if (!match) notFound();
-  return <MatchPage match={match} />;
+  return <MatchPage match={withTrackerRounds(match)} />;
 }

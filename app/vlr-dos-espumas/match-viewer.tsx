@@ -8,11 +8,17 @@ import { displayScore, formatDuration, formatMatchDate, leaderboardRows, totalRo
 import { RATING_VALIDATION } from "@/lib/vlr/rating.mjs";
 import { PLAYER_AVATARS } from "@/lib/vlr/players";
 import type { LeaderboardRow, MatchTeam, SortColumn, ValorantMatch } from "@/lib/vlr/types";
+import { hasRoundDetails } from "@/lib/vlr/performance";
+import { EconomyView } from "./economy-view";
+import { PerformanceView } from "./performance-view";
+import { ReplayView } from "./replay-view";
+import { RoundTimeline } from "./round-timeline";
 import styles from "./vlr.module.css";
 
 const agentByName = new Map(agents.map((agent) => [agent.name, agent]));
 const signed = (value: number) => value > 0 ? `+${value}` : String(value);
 const balanceClass = (value: number) => value > 0 ? styles.positive : value < 0 ? styles.negative : "";
+const SECTIONS = [{ id: "overview", label: "Visão geral" }, { id: "performance", label: "Desempenho" }, { id: "economy", label: "Economia" }, { id: "replay", label: "Replay 2D" }] as const;
 
 function Crest({ team }: { team: MatchTeam }) {
   return <span className={`${styles.crest} ${styles[team.crest]}`} role="img" aria-label={`Escudo do time ${team.name}`} />;
@@ -26,16 +32,20 @@ function AgentPortraits({ row }: { row: LeaderboardRow }) {
 }
 
 export function MatchViewer({ match }: { match: ValorantMatch }) {
-  const [activeMap, setActiveMap] = useState("all");
+  const singleMap = match.maps.length === 1;
+  const [activeMap, setActiveMap] = useState(singleMap ? match.maps[0].id : "all");
   const [teamFilter, setTeamFilter] = useState("all");
+  const [section, setSection] = useState<(typeof SECTIONS)[number]["id"]>("overview");
   const [sort, setSort] = useState<{ column: SortColumn; direction: "asc" | "desc" }>({ column: "rating", direction: "desc" });
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const score = displayScore(match);
   const selectedMap = match.maps.find((map) => map.id === activeMap);
   const rows = leaderboardRows(match, activeMap);
-  const mapTabs = [{ id: "all", label: "Todos os mapas" }, ...match.maps.map((map, index) => ({ id: map.id, label: `${index + 1} ${map.name}` }))];
+  const mapTabs = [...singleMap ? [] : [{ id: "all", label: "Todos os mapas" }], ...match.maps.map((map, index) => ({ id: map.id, label: `${index + 1} ${map.name}` }))];
   const rounds = selectedMap ? selectedMap.score[0] + selectedMap.score[1] : totalRounds(match);
   const title = selectedMap?.name ?? "Todos os mapas";
+  const visibleMaps = selectedMap ? [selectedMap] : match.maps;
+  const showSections = hasRoundDetails(match, match.maps);
 
   function sortBy(column: SortColumn) {
     setSort((current) => ({ column, direction: current.column === column && current.direction === "desc" ? "asc" : "desc" }));
@@ -73,12 +83,15 @@ export function MatchViewer({ match }: { match: ValorantMatch }) {
     <section className={styles.statsSection} aria-label="Estatísticas da partida">
       <div className={styles.sectionLabel}>Mapas e estatísticas</div>
       <div className={styles.statsCard}>
+        {showSections && <div className={styles.sectionTabs} role="group" aria-label="Seção das estatísticas">{SECTIONS.map((entry) => <button key={entry.id} type="button" aria-pressed={section === entry.id} className={section === entry.id ? styles.activeSection : ""} onClick={() => setSection(entry.id)}>{entry.label}</button>)}</div>}
         <div className={styles.mapTabs} style={{ gridTemplateColumns: `repeat(${mapTabs.length}, minmax(0, 1fr))` }} role="tablist" aria-label="Mapa da leaderboard">{mapTabs.map((tab, index) => <button key={tab.id} ref={(element) => { tabRefs.current[tab.id] = element; }} id={`map-tab-${tab.id}`} type="button" role="tab" aria-selected={activeMap === tab.id} aria-controls="match-stats-panel" tabIndex={activeMap === tab.id ? 0 : -1} className={activeMap === tab.id ? styles.activeTab : ""} onClick={() => setActiveMap(tab.id)} onKeyDown={(event) => onTabKey(event, index)}>{tab.label}</button>)}</div>
         <div id="match-stats-panel" role="tabpanel" aria-labelledby={`map-tab-${activeMap}`} tabIndex={0}>
           {selectedMap && <div className={styles.mapBanner}>
             <Image src={`/maps/${selectedMap.id}.webp`} alt="" fill sizes="(max-width: 900px) 100vw, 900px" className={styles.mapBannerImage} />
             <div className={styles.mapBannerContent}><div><span>Mapa {match.maps.indexOf(selectedMap) + 1}</span><h3>{selectedMap.name}</h3><small>{formatDuration(selectedMap.durationSeconds)} · {rounds} rounds{rounds > 24 ? " · Prorrogação" : ""}</small></div><div className={styles.mapBannerScore}><span>{match.teams[0].tag}</span><strong>{selectedMap.score[0]} <em>:</em> {selectedMap.score[1]}</strong><span>{match.teams[1].tag}</span></div></div>
           </div>}
+          {section === "overview" && <>
+          {selectedMap && <RoundTimeline match={match} map={selectedMap} />}
           <div className={styles.tableToolbar}><div aria-live="polite"><strong>{title}</strong><span>{rounds} rounds{activeMap === "all" ? " · Estatísticas consolidadas" : ""}</span></div><div className={styles.teamFilter} role="group" aria-label="Filtrar equipe">{[{ id: "all", name: "Todos" }, ...match.teams.map((team) => ({ id: team.id, name: team.name }))].map((filter) => <button type="button" key={filter.id} aria-pressed={teamFilter === filter.id} className={teamFilter === filter.id ? styles.activeFilter : ""} onClick={() => setTeamFilter(filter.id)}>{filter.name}</button>)}</div></div>
           {match.teams.filter((team) => teamFilter === "all" || teamFilter === team.id).map((team) => {
             const players = rows.filter((row) => row.teamId === team.id).sort((a, b) => (sort.direction === "desc" ? b[sort.column] - a[sort.column] : a[sort.column] - b[sort.column]) || b.rating - a.rating || a.name.localeCompare(b.name));
@@ -112,6 +125,10 @@ export function MatchViewer({ match }: { match: ValorantMatch }) {
             </div>;
           })}
           <div className={styles.tableNotes}><p><strong>* R:</strong> Rating Espumas v1, estimativa calibrada com o VLR 2.0. Não é o rating oficial.</p>{activeMap === "all" && <p><strong>HS%:</strong> {match.maps.map((map) => map.name).join(" / ")}, na mesma ordem. Médias gerais por round.</p>}<p className={styles.mobileHint}>Deslize a tabela para ver todas as colunas.</p></div>
+          </>}
+          {section === "performance" && <PerformanceView match={match} maps={visibleMaps} />}
+          {section === "economy" && <EconomyView match={match} maps={visibleMaps} />}
+          {section === "replay" && (selectedMap ? <ReplayView key={selectedMap.id} match={match} map={selectedMap} /> : <p className={styles.replayPick}>Escolha um mapa acima para ver o replay 2D.</p>)}
         </div>
       </div>
     </section>

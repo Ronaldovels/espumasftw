@@ -91,6 +91,96 @@
         9
       ],
       "durationSeconds": 1948,
+      "rounds": [
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "buchas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "buchas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "buchas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "buchas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "buchas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "buchas",
+          "outcome": "detonate"
+        },
+        {
+          "winner": "buchas",
+          "outcome": "detonate"
+        },
+        {
+          "winner": "buchas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "buchas",
+          "outcome": "detonate"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        }
+      ],
       "sourceUrl": "https://tracker.gg/valorant/match/1bd9f7bd-399b-4a51-83d4-77be0fe290b6",
       "stats": [
         {
