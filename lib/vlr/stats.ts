@@ -1,4 +1,4 @@
-import type { LeaderboardRow, MapPlayerStats, ValorantMatch } from "./types";
+import type { LeaderboardRow, MapPlayerStats, MatchMap, TimelineRound, ValorantMatch } from "./types";
 import { rawRating } from "./rating.mjs";
 
 export function seriesScore(match: ValorantMatch): [number, number] {
@@ -30,6 +30,35 @@ export function aggregateMapStats(entries: StatEntry[]) {
   return { rounds, kills, deaths, assists, fk, fd, rating: Math.round(Math.max(0, raw) * 100) / 100,
     acs: weighted("acs"), adr: weighted("adr"), kast: weighted("kast"),
     kd: deaths ? kills / deaths : null, kpr: kills / rounds, apr: assists / rounds, fkfd: fd ? fk / fd : null };
+}
+
+// Sides swap at round 13; overtime alternates every round, starting from first-half sides.
+export function sidesSwapped(round: number): boolean {
+  return round > 24 ? (round - 25) % 2 === 1 : round > 12;
+}
+
+// Spike rounds reveal the attackers: a detonation is won by them, a defuse or timeout against them.
+// Returns every first-half attacker those rounds imply; consistent data yields at most one.
+export function firstHalfAttackers(match: ValorantMatch, map: MatchMap): Set<string> {
+  const attackers = new Set<string>();
+  map.rounds?.forEach((round, index) => {
+    if (round.outcome === "elimination") return;
+    const loser = match.teams.find((team) => team.id !== round.winner)!.id;
+    const attacker = round.outcome === "detonate" ? round.winner : loser;
+    attackers.add(sidesSwapped(index + 1) ? match.teams.find((team) => team.id !== attacker)!.id : attacker);
+  });
+  return attackers;
+}
+
+export function roundTimeline(match: ValorantMatch, map: MatchMap): TimelineRound[] {
+  const inferred = firstHalfAttackers(match, map);
+  const firstAttacker = inferred.size === 1 ? [...inferred][0] : undefined;
+  return (map.rounds ?? []).map((round, index) => {
+    const number = index + 1;
+    const winnerIndex = match.teams[0].id === round.winner ? 0 : 1;
+    const attacker = firstAttacker && (sidesSwapped(number) ? match.teams.find((team) => team.id !== firstAttacker)!.id : firstAttacker);
+    return { ...round, number, winnerIndex, winnerSide: attacker ? round.winner === attacker ? "attack" : "defense" : undefined };
+  });
 }
 
 export function formatMatchDate(date: string, short = false): string {

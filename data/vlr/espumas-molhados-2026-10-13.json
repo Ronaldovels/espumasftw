@@ -91,6 +91,120 @@
         13
       ],
       "durationSeconds": 2807,
+      "rounds": [
+        {
+          "winner": "molhados",
+          "outcome": "detonate"
+        },
+        {
+          "winner": "molhados",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "molhados",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "molhados",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "molhados",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "molhados",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "molhados",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "molhados",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "molhados",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "molhados",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "molhados",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "molhados",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "molhados",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        }
+      ],
       "sourceUrl": "https://tracker.gg/valorant/match/98f02482-427c-42f2-9707-b895f125b275",
       "stats": [
         {

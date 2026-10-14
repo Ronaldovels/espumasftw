@@ -91,6 +91,80 @@
         5
       ],
       "durationSeconds": 1628,
+      "rounds": [
+        {
+          "winner": "loucas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "loucas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "loucas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "loucas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "loucas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        }
+      ],
       "sourceUrl": "https://tracker.gg/valorant/match/9a24b53c-8225-4d87-b30b-6ced77fd572d",
       "stats": [
         {
