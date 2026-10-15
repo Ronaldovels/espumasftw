@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import { detailedRounds } from "../lib/vlr/performance.ts";
 import { replayFrameIndex, replayFrames, replayMarkers } from "../lib/vlr/replay.ts";
-import { pointAlongPath, replayNavigation, walkableSegment, walkingPath } from "../lib/vlr/navigation.ts";
+import { plausibleWalkingPath, pointAlongPath, replayNavigation, traversableSegment, walkableSegment, walkingPath } from "../lib/vlr/navigation.ts";
 
 const corridor = { size: 7, walkable: new Uint8Array(49).fill(1) };
 for (let y = 0; y < 5; y++) corridor.walkable[y * 7 + 3] = 0;
@@ -16,6 +16,16 @@ const corners = { size: 2, walkable: new Uint8Array([1, 0, 0, 1]) };
 assert(!walkableSegment(corners, { x: .25, y: .25 }, { x: .75, y: .75 }), "No diagonal corner cutting");
 assert.equal(walkingPath(corners, { x: .25, y: .25 }, { x: .75, y: .75 }), null, "Disconnected floors have no fabricated route");
 assert.equal(walkingPath(corridor, { x: -.1, y: .2 }, right), null, "Off-map positions do not create straight-line fallbacks");
+const bind = replayNavigation("bind");
+const hookah = { x: .316, y: .369 }, site = { x: .309, y: .358 };
+const drop = walkingPath(bind, hookah, site);
+assert(drop && drop.segments.includes("drop") && drop.length < .04, "Hookah window connects to B through a short drop");
+assert(!walkableSegment(bind, hookah, site), "The height ledge stays blocked for ordinary walking");
+const reverseDrop = walkingPath(bind, site, hookah);
+assert(reverseDrop.length > .4 && !reverseDrop.segments.includes("drop"), "A drop cannot be used as a climb in reverse");
+assert(!plausibleWalkingPath(bind, reverseDrop, site, hookah, 3), "A long inferred detour cannot be compressed into three seconds");
+assert(plausibleWalkingPath(bind, reverseDrop, site, hookah, 30), "Longer observed intervals can accommodate a walking detour");
+assert(plausibleWalkingPath(bind, drop, hookah, site, 3));
 
 const marker = (playerId, x, facing = 0) => ({ playerId, x, y: .5, facing });
 const fixture = {
@@ -72,10 +82,16 @@ for (const file of (await readdir(new URL("../data/tracker-rounds/", import.meta
         assert(!walkableSegment(grid, from, to), `${player}: video regression crosses the central Bind void in a straight line`);
         assert(route && route.length > Math.hypot(to.x - from.x, to.y - from.y) * 1.2, `${player}: rotation follows the longer real corridor`);
       }
+      const beforeDeath = timeline.find((frame) => frame.time === 33);
+      const death = timeline.find((frame) => frame.time === 36);
+      const brimstone = beforeDeath.paths.maopyk;
+      assert(brimstone && brimstone.segments.includes("drop") && brimstone.length < .04, "Brimstone video regression: Hookah drop instead of running around B");
+      assert(death.markers.find((entry) => entry.playerId === "maopyk").dead, "Brimstone still dies at the recorded instant");
+      assert(!replayMarkers(timeline, 35.99).find((entry) => entry.playerId === "maopyk").dead, "The drop does not anticipate the death");
     }
     for (const [index, frame] of timeline.entries()) {
       for (const route of Object.values(frame.paths)) if (route) {
-        for (let i = 1; i < route.points.length; i++) assert(walkableSegment(grid, route.points[i - 1], route.points[i]), `${file} R${round.number}: route does not cross a wall`);
+        for (let i = 1; i < route.points.length; i++) assert(traversableSegment(grid, route.points[i - 1], route.points[i], route.segments[i - 1]), `${file} R${round.number}: only walking floors or explicitly mapped directional drops`);
         paths++;
       }
       assert.deepEqual(replayMarkers(timeline, frame.time), frame.markers, `${file} R${round.number}: exact recorded instant`);
@@ -88,10 +104,16 @@ for (const file of (await readdir(new URL("../data/tracker-rounds/", import.meta
         assert(Number.isFinite(entry.x) && Number.isFinite(entry.y));
         assert(entry.x > 0 && entry.x < 1 && entry.y > 0 && entry.y < 1);
         if (entry.dead) assert.deepEqual(entry, frame.markers.find((other) => other.playerId === entry.playerId), "No moving bodies");
-        else if (frame.paths[entry.playerId]) assert(walkableSegment(grid, entry, entry), `${file}: interpolated player remains on a walking cell`);
+        else if (frame.paths[entry.playerId] && !walkableSegment(grid, entry, entry)) {
+          const route = frame.paths[entry.playerId];
+          assert(route.points.slice(1).some((to, i) => {
+            const from = route.points[i];
+            return route.segments[i] === "drop" && Math.abs(Math.hypot(entry.x - from.x, entry.y - from.y) + Math.hypot(entry.x - to.x, entry.y - to.y) - Math.hypot(to.x - from.x, to.y - from.y)) < 1e-8;
+          }), `${file}: a player off the walking floor must be on a mapped drop`);
+        }
       }
     }
     count++;
   }
 }
-console.log(`Replay: ${count} rounds, ${paths} walking routes verified; walls, Bind Clove/Skye rotation, event timing, simultaneous deaths, resurrection and reduced motion passed.`);
+console.log(`Replay: ${count} rounds, ${paths} routes verified; walls, Hookah drops, detour timing, Bind Clove/Skye rotation, deaths, resurrection and reduced motion passed.`);

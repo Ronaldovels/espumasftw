@@ -7,6 +7,8 @@ const require = createRequire(import.meta.url);
 const sharp = require(require.resolve("sharp", { paths: [require.resolve("next/package.json")] }));
 const size = 256;
 const maps = {};
+const connections = JSON.parse(await readFile(new URL("../data/replay-navigation-links.json", import.meta.url), "utf8"));
+const mapScales = JSON.parse(await readFile(new URL("../lib/tactics/maps.json", import.meta.url), "utf8"));
 for (const file of (await readdir(new URL("../public/minimaps/", import.meta.url))).filter((name) => name.endsWith(".png")).sort()) {
   const source = await readFile(new URL(`../public/minimaps/${file}`, import.meta.url));
   const { data, info } = await sharp(source).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -58,7 +60,23 @@ for (const file of (await readdir(new URL("../public/minimaps/", import.meta.url
     }
     return spans.join(",");
   });
-  maps[file.slice(0, -4)] = { sha256: createHash("sha256").update(source).digest("hex"), rows };
+  const mapId = file.slice(0, -4);
+  const links = [];
+  for (const connection of connections.maps[mapId] ?? []) {
+    const width = Math.hypot(connection.entry[1][0] - connection.entry[0][0], connection.entry[1][1] - connection.entry[0][1]);
+    const steps = Math.max(1, Math.ceil(width / connections.coordinateSize * size));
+    const cellAt = (band, progress) => {
+      const x = Math.floor((band[0][0] + (band[1][0] - band[0][0]) * progress) / connections.coordinateSize * size);
+      const y = Math.floor((band[0][1] + (band[1][1] - band[0][1]) * progress) / connections.coordinateSize * size);
+      return y * size + x;
+    };
+    for (let step = 0; step <= steps; step++) {
+      const from = cellAt(connection.entry, step / steps), to = cellAt(connection.exit, step / steps);
+      if (!walkable[from] || !walkable[to]) throw new Error(`${mapId} ${connection.id}: link must connect two walking floors`);
+      links.push({ id: connection.id, kind: connection.kind, from, to });
+    }
+  }
+  maps[mapId] = { sha256: createHash("sha256").update(source).digest("hex"), metersToMapUnits: mapScales[mapId].meter, rows, ...(links.length ? { links } : {}) };
   console.log(`${file}: ${largest.length} connected walking cells`);
 }
 const output = `${JSON.stringify({ size, maps }, null, 2)}\n`;

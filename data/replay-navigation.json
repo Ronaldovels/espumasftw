@@ -3,6 +3,7 @@
   "maps": {
     "abyss": {
       "sha256": "466a3d18f78c251b416533959471bdef80b75e9dd3f8a89b1601e6c1ed4d299f",
+      "metersToMapUnits": 0.0081,
       "rows": [
         "",
         "",
@@ -264,6 +265,7 @@
     },
     "ascent": {
       "sha256": "287357fcfce230ecb67704cafdb519a5bdb91602ed30f897474a65e86469c550",
+      "metersToMapUnits": 0.006999999999999999,
       "rows": [
         "",
         "",
@@ -525,6 +527,7 @@
     },
     "bind": {
       "sha256": "84f5ff72aa58bf677617ab5792def847c1c154b38f6e7458f7234121baa3507f",
+      "metersToMapUnits": 0.0059,
       "rows": [
         "",
         "",
@@ -782,10 +785,61 @@
         "",
         "",
         ""
+      ],
+      "links": [
+        {
+          "id": "hookah-to-b-site",
+          "kind": "drop",
+          "from": 24140,
+          "to": 23372
+        },
+        {
+          "id": "hookah-to-b-site",
+          "kind": "drop",
+          "from": 24141,
+          "to": 23373
+        },
+        {
+          "id": "hookah-to-b-site",
+          "kind": "drop",
+          "from": 24142,
+          "to": 23374
+        },
+        {
+          "id": "hookah-to-b-site",
+          "kind": "drop",
+          "from": 24143,
+          "to": 23375
+        },
+        {
+          "id": "hookah-to-b-site",
+          "kind": "drop",
+          "from": 24144,
+          "to": 23376
+        },
+        {
+          "id": "hookah-to-b-site",
+          "kind": "drop",
+          "from": 24145,
+          "to": 23377
+        },
+        {
+          "id": "hookah-to-b-site",
+          "kind": "drop",
+          "from": 24146,
+          "to": 23378
+        },
+        {
+          "id": "hookah-to-b-site",
+          "kind": "drop",
+          "from": 24147,
+          "to": 23379
+        }
       ]
     },
     "corrode": {
       "sha256": "9f9ed010f502a1146435e779ec2979ce2eb72f78559df19fb89d47e36c98a483",
+      "metersToMapUnits": 0.006999999999999999,
       "rows": [
         "",
         "",
@@ -1047,6 +1101,7 @@
     },
     "haven": {
       "sha256": "f8ccc9cfffaf3eeed0b735cf3ecffc1ce46f0fbb54bdb69d9ba72b63d32b4936",
+      "metersToMapUnits": 0.0075,
       "rows": [
         "",
         "",
@@ -1308,6 +1363,7 @@
     },
     "lotus": {
       "sha256": "d533af2a6fbc09f12579b2d33438a610d5846db61e56842ad3038087155851c2",
+      "metersToMapUnits": 0.0072,
       "rows": [
         "",
         "",
@@ -1569,6 +1625,7 @@
     },
     "split": {
       "sha256": "cc102270353627dab124a7c4ecc429fa150982aa7f243b944ac15f8f83b5b7c8",
+      "metersToMapUnits": 0.0078,
       "rows": [
         "",
         "",
@@ -1830,6 +1887,7 @@
     },
     "summit": {
       "sha256": "e3ceb9a90958953933aa2e0a7821cb42eb80d622700be89c288d933ac855075f",
+      "metersToMapUnits": 0.0075,
       "rows": [
         "",
         "",
@@ -2091,6 +2149,7 @@
     },
     "sunset": {
       "sha256": "1188642e2f94f4fbb17d6c61feb9071d349dec21c9749349db710afbc1bbb228",
+      "metersToMapUnits": 0.0078,
       "rows": [
         "",
         "",

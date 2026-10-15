@@ -175,6 +175,6 @@ export function ReplayView({ match, map }: { match: ValorantMatch; map: MatchMap
         </li>)}</ol>
       </div>
     </div>
-    <p className={styles.viewNote}>Posições registradas pelo Tracker nos eventos; as rotas entre elas são estimadas pelos corredores do minimapa e não mostram o caminho exato. A reprodução começa no primeiro registro do round. Linhas tracejadas indicam abates por habilidade sem identificação do efeito. ✕ marca mortes; vermelho é ataque e verde-água, defesa.{reducedMotion ? " Movimento reduzido ativo: posições exibidas por evento." : ""}</p>
+    <p className={styles.viewNote}>Posições registradas pelo Tracker nos eventos; as rotas entre elas são estimadas pelas passagens do minimapa e não mostram o caminho exato. A reprodução começa no primeiro registro do round. Linhas tracejadas indicam abates por habilidade sem identificação do efeito. ✕ marca mortes; vermelho é ataque e verde-água, defesa.{reducedMotion ? " Movimento reduzido ativo: posições exibidas por evento." : ""}</p>
   </div>;
 }

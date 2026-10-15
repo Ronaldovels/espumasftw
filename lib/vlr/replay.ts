@@ -1,5 +1,5 @@
 import type { DetailedRound, MapMarker } from "./performance";
-import { pointAlongPath, replayNavigation, walkingPath, type ReplayPath } from "./navigation.ts";
+import { plausibleWalkingPath, pointAlongPath, replayNavigation, walkingPath, type ReplayPath } from "./navigation.ts";
 
 export type ReplayMarker = MapMarker & { dead: boolean; opacity?: number };
 export type ReplayFrame = { time: number; markers: ReplayMarker[]; eventIndex: number; paths?: Record<string, ReplayPath | null> };
@@ -35,7 +35,10 @@ export function replayFrames(round: DetailedRound, mapId?: string): ReplayFrame[
       frame.paths = {};
       for (const marker of frame.markers) {
         const target = frames[index + 1]?.markers.find((entry) => entry.playerId === marker.playerId);
-        if (target && !marker.dead) frame.paths[marker.playerId] = grid ? walkingPath(grid, marker, target) : null;
+        if (target && !marker.dead) {
+          const route = grid ? walkingPath(grid, marker, target) : null;
+          frame.paths[marker.playerId] = grid && route && plausibleWalkingPath(grid, route, marker, target, frames[index + 1].time - frame.time) ? route : null;
+        }
       }
     });
   }

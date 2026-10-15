@@ -1,0 +1,13 @@
+{
+  "coordinateSize": 1024,
+  "maps": {
+    "bind": [
+      {
+        "id": "hookah-to-b-site",
+        "kind": "drop",
+        "entry": [[306, 378], [334, 378]],
+        "exit": [[306, 366], [334, 366]]
+      }
+    ]
+  }
+}

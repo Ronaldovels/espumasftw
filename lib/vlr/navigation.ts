@@ -1,14 +1,15 @@
 import navigation from "../../data/replay-navigation.json" with { type: "json" };
 
 export type Point = { x: number; y: number };
-export type NavigationGrid = { size: number; walkable: Uint8Array };
-export type ReplayPath = { points: Point[]; distances: number[]; length: number };
+export type NavigationLink = { id: string; kind: "drop"; from: number; to: number };
+export type NavigationGrid = { size: number; walkable: Uint8Array; metersToMapUnits?: number; links?: NavigationLink[] };
+export type ReplayPath = { points: Point[]; distances: number[]; length: number; segments: ("walk" | "drop")[] };
 const grids = new Map<string, NavigationGrid>();
 
 export function replayNavigation(mapId: string): NavigationGrid | null {
   const cached = grids.get(mapId);
   if (cached) return cached;
-  const source = (navigation.maps as Record<string, { rows: string[] }>)[mapId];
+  const source = (navigation.maps as Record<string, { rows: string[]; metersToMapUnits: number; links?: NavigationLink[] }>)[mapId];
   if (!source) return null;
   const size = navigation.size;
   const walkable = new Uint8Array(size * size);
@@ -18,7 +19,7 @@ export function replayNavigation(mapId: string): NavigationGrid | null {
       walkable.fill(1, y * size + start, y * size + end + 1);
     }
   });
-  const grid = { size, walkable };
+  const grid = { size, walkable, metersToMapUnits: source.metersToMapUnits, links: source.links };
   grids.set(mapId, grid);
   return grid;
 }
@@ -100,10 +101,10 @@ class Frontier {
   }
 }
 
-function path(points: Point[]): ReplayPath {
+function path(points: Point[], segments: ("walk" | "drop")[] = points.slice(1).map(() => "walk")): ReplayPath {
   const distances = [0];
   for (let i = 1; i < points.length; i++) distances.push(distances[i - 1] + Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y));
-  return { points, distances, length: distances.at(-1) ?? 0 };
+  return { points, distances, length: distances.at(-1) ?? 0, segments };
 }
 
 export function walkingPath(grid: NavigationGrid, source: Point, destination: Point): ReplayPath | null {
@@ -115,10 +116,11 @@ export function walkingPath(grid: NavigationGrid, source: Point, destination: Po
   const end = Math.floor(to.y * size) * size + Math.floor(to.x * size);
   const costs = new Float64Array(walkable.length).fill(Infinity);
   const previous = new Int32Array(walkable.length).fill(-1);
+  const previousLink = new Int16Array(walkable.length).fill(-1);
   const closed = new Uint8Array(walkable.length);
   const heuristic = (cell: number) => {
     const dx = Math.abs(cell % size - end % size), dy = Math.abs(Math.floor(cell / size) - Math.floor(end / size));
-    return Math.max(dx, dy) + (Math.SQRT2 - 1) * Math.min(dx, dy);
+    return Math.hypot(dx, dy);
   };
   const frontier = new Frontier();
   costs[start] = 0;
@@ -136,23 +138,54 @@ export function walkingPath(grid: NavigationGrid, source: Point, destination: Po
       if (dx && dy && (!walkable[cell + dx] || !walkable[cell + dy * size])) continue;
       const cost = costs[cell] + (dx && dy ? Math.SQRT2 : 1);
       if (cost >= costs[next]) continue;
-      costs[next] = cost; previous[next] = cell;
+      costs[next] = cost; previous[next] = cell; previousLink[next] = -1;
       frontier.push(next, cost + heuristic(next));
+    }
+    // Ledges/windows connect floors at different heights. These edges are
+    // directional; adding a drop does not make its wall climbable in reverse.
+    for (const [index, link] of (grid.links ?? []).entries()) {
+      if (link.from !== cell || closed[link.to]) continue;
+      const cost = costs[cell] + Math.hypot(link.to % size - x, Math.floor(link.to / size) - y);
+      if (cost >= costs[link.to]) continue;
+      costs[link.to] = cost; previous[link.to] = cell; previousLink[link.to] = index;
+      frontier.push(link.to, cost + heuristic(link.to));
     }
   }
   if (previous[end] < 0) return null;
   const cells = [end];
   while (cells.at(-1) !== start) cells.push(previous[cells.at(-1)!]);
-  const points = cells.reverse().map((entry) => ({ x: (entry % size + .5) / size, y: (Math.floor(entry / size) + .5) / size }));
+  cells.reverse();
+  const points = cells.map((entry) => ({ x: (entry % size + .5) / size, y: (Math.floor(entry / size) + .5) / size }));
+  const drops = cells.slice(1).map((entry) => previousLink[entry] >= 0);
   points[0] = from; points[points.length - 1] = to;
   // Remove grid stair-steps only when the shortcut is itself collision-free.
   const simplified = [points[0]];
+  const segments: ("walk" | "drop")[] = [];
   for (let index = 0; index < points.length - 1;) {
+    if (drops[index]) {
+      simplified.push(points[index + 1]); segments.push("drop"); index++;
+      continue;
+    }
     let next = index + 1;
-    while (next + 1 < points.length && walkableSegment(grid, points[index], points[next + 1])) next++;
-    simplified.push(points[next]); index = next;
+    while (next + 1 < points.length && !drops[next] && walkableSegment(grid, points[index], points[next + 1])) next++;
+    simplified.push(points[next]); segments.push("walk"); index = next;
   }
-  return path(simplified);
+  return path(simplified, segments);
+}
+
+export function traversableSegment(grid: NavigationGrid, from: Point, to: Point, kind: "walk" | "drop"): boolean {
+  if (kind === "walk") return walkableSegment(grid, from, to);
+  const cell = (point: Point) => Math.floor(point.y * grid.size) * grid.size + Math.floor(point.x * grid.size);
+  return grid.links?.some((link) => link.from === cell(from) && link.to === cell(to)) ?? false;
+}
+
+// Only inferred detours are rejected. A short observed displacement should not
+// become a sprint around the map when a height connection is not yet mapped.
+export function plausibleWalkingPath(grid: NavigationGrid, route: ReplayPath, from: Point, to: Point, seconds: number): boolean {
+  const direct = Math.hypot(to.x - from.x, to.y - from.y);
+  if (!grid.metersToMapUnits || route.length - direct < grid.metersToMapUnits * 5) return true;
+  // A generous 8m/s reconstruction budget, not a claim about an agent's speed.
+  return route.length <= grid.metersToMapUnits * 8 * seconds;
 }
 
 export function pointAlongPath(route: ReplayPath, progress: number): Point {
