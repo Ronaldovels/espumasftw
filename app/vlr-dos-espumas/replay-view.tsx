@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import agents from "@/app/agents.json";
-import { detailedRounds, type DetailedRound, type MapMarker, type RoundEvent } from "@/lib/vlr/performance";
+import { detailedRounds, type RoundEvent } from "@/lib/vlr/performance";
+import { replayFrameIndex, replayFrames } from "@/lib/vlr/replay";
 import type { MatchMap, RoundSide, ValorantMatch } from "@/lib/vlr/types";
+import { ReplayStage, type ReplayStageHandle } from "./replay-stage";
 import styles from "./vlr.module.css";
 
 const agentByName = new Map(agents.map((agent) => [agent.name, agent]));
@@ -17,58 +19,94 @@ const WEAPONS: Record<string, string> = {
 };
 const SIDE_LABEL: Record<RoundSide, string> = { attack: "Ataque", defense: "Defesa" };
 const credits = (value: number) => value.toLocaleString("pt-BR");
-const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
-
-function eventPlayers(event: RoundEvent) {
-  return event.type === "kill" ? [event.killer, event.victim] : event.type === "death" ? [event.victim] : [event.player];
-}
-
-// Where each player who died before the selected event fell: their victim marker, or their last known position.
-function fallen(round: DetailedRound, upTo: number) {
-  const positions = new Map<string, MapMarker>();
-  round.events.slice(0, upTo).forEach((event, index) => {
-    if (event.type !== "kill" && event.type !== "death") return;
-    const snapshot = round.snapshots?.[index] ?? [];
-    const marker = snapshot.find((entry) => entry.playerId === event.victim)
-      ?? round.snapshots?.slice(0, index).reverse().flatMap((entry) => entry).find((entry) => entry.playerId === event.victim);
-    if (marker) positions.set(event.victim, marker);
-  });
-  return positions;
-}
+const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds) % 60).padStart(2, "0")}`;
+const reduceQuery = "(prefers-reduced-motion: reduce)";
+const subscribeMotion = (notify: () => void) => {
+  const query = window.matchMedia(reduceQuery);
+  query.addEventListener("change", notify);
+  return () => query.removeEventListener("change", notify);
+};
+const motionPreference = () => window.matchMedia(reduceQuery).matches;
+const serverMotionPreference = () => false;
 
 export function ReplayView({ match, map }: { match: ValorantMatch; map: MatchMap }) {
-  const rounds = detailedRounds(match, map) ?? [];
+  const rounds = useMemo(() => detailedRounds(match, map) ?? [], [match, map]);
   const [roundIndex, setRoundIndex] = useState(0);
-  const [eventIndex, setEventIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [speed, setSpeed] = useState(2);
   const round = rounds[roundIndex];
+  const frames = useMemo(() => round ? replayFrames(round) : [], [round]);
+  const startTime = frames[0]?.time ?? 0;
+  const endTime = frames.at(-1)?.time ?? startTime;
+  const [time, setTime] = useState(startTime);
+  const playhead = useRef(startTime);
+  const stage = useRef<ReplayStageHandle>(null);
+  const reducedMotion = useSyncExternalStore(subscribeMotion, motionPreference, serverMotionPreference);
 
+  // Only the map's transforms/opacity change each frame. React's clock, event
+  // log and loadouts refresh at most ~12 times a second, not on every frame.
   useEffect(() => {
-    if (!playing || !round) return;
-    const timer = setTimeout(() => {
-      if (eventIndex < round.events.length - 1) setEventIndex(eventIndex + 1);
-      else if (roundIndex < rounds.length - 1) { setRoundIndex(roundIndex + 1); setEventIndex(0); }
-      else setPlaying(false);
-    }, eventIndex === round.events.length - 1 ? 2200 : 1300);
-    return () => clearTimeout(timer);
-  }, [playing, round, roundIndex, eventIndex, rounds.length]);
+    if (!playing || !round?.snapshots || !frames.length) return;
+    let animation = 0;
+    let previous = 0;
+    let published = 0;
+    const tick = (now: number) => {
+      if (document.hidden) previous = 0;
+      else {
+        if (previous) playhead.current += Math.min((now - previous) / 1000, .25) * speed;
+        previous = now;
+        stage.current?.draw(playhead.current);
+        if (now - published >= 80) { setTime(Math.min(endTime, playhead.current)); published = now; }
+        if (playhead.current >= endTime + 1.2) {
+          const next = rounds[roundIndex + 1];
+          if (next?.snapshots && next.events.length) {
+            const start = Math.min(...next.events.map((event) => event.time));
+            playhead.current = start;
+            setTime(start);
+            setRoundIndex(roundIndex + 1);
+          } else { setTime(endTime); setPlaying(false); }
+          return;
+        }
+      }
+      animation = requestAnimationFrame(tick);
+    };
+    animation = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(animation);
+  }, [playing, round, roundIndex, rounds, speed, endTime, frames.length]);
 
-  if (!round?.snapshots) return <p className={styles.viewNote}>O replay 2D ainda não tem posições registradas para {map.name}.</p>;
+  useEffect(() => { stage.current?.draw(playhead.current); }, [time, frames, reducedMotion]);
+
+  if (!round?.snapshots || !frames.length) return <p className={styles.viewNote}>O replay 2D ainda não tem posições registradas para {map.name}.</p>;
 
   const player = (playerId: string) => match.players.find((entry) => entry.id === playerId)!;
   const teamIndex = (playerId: string) => match.teams.findIndex((team) => team.id === player(playerId).teamId);
   const agentOf = (playerId: string) => agentByName.get(map.stats.find((stats) => stats.playerId === playerId)?.agent ?? "");
   const attackers = round.winnerSide === "attack" ? round.winnerIndex : 1 - round.winnerIndex;
   const sideOf = (playerId: string): RoundSide => teamIndex(playerId) === attackers ? "attack" : "defense";
-  const score = [0, 1].map((index) => rounds.slice(0, roundIndex + 1).filter((entry) => entry.winnerIndex === index).length);
-  const event = round.events[eventIndex];
-  const snapshot = round.snapshots[eventIndex] ?? [];
-  const dead = fallen(round, eventIndex);
-  const focus = new Set(eventPlayers(event));
-  const killer = event.type === "kill" ? snapshot.find((entry) => entry.playerId === event.killer) : undefined;
-  const victim = event.type === "kill" || event.type === "death" ? snapshot.find((entry) => entry.playerId === event.victim) ?? dead.get(event.victim) : undefined;
+  const score = [0, 1].map((index) => rounds.slice(0, roundIndex + (time >= endTime ? 1 : 0)).filter((entry) => entry.winnerIndex === index).length);
+  const frameIndex = replayFrameIndex(frames, time);
+  const frame = frames[frameIndex];
+  const dead = new Set(frame.markers.filter((marker) => marker.dead).map((marker) => marker.playerId));
+  const stagePlayers = match.players.filter((entry) => map.stats.some((stats) => stats.playerId === entry.id))
+    .map((entry) => ({ id: entry.id, name: entry.name, icon: agentOf(entry.id)?.icon, side: sideOf(entry.id) }));
 
-  function selectRound(index: number) { setRoundIndex(index); setEventIndex(0); }
+  function seek(value: number) {
+    const next = Math.max(startTime, Math.min(endTime, value));
+    setPlaying(false);
+    playhead.current = next;
+    setTime(next);
+    stage.current?.draw(next);
+  }
+  function selectRound(index: number) {
+    setPlaying(false);
+    playhead.current = Math.min(...rounds[index].events.map((event) => event.time));
+    setTime(playhead.current);
+    setRoundIndex(index);
+  }
+  function togglePlayback() {
+    if (!playing && playhead.current >= endTime) { playhead.current = startTime; setTime(startTime); }
+    setPlaying(!playing);
+  }
   function chip(playerId: string) {
     const agent = agentOf(playerId);
     return <span className={`${styles.replayChip} ${styles[`${sideOf(playerId)}Chip`]}`}>{agent && <Image src={agent.icon} alt="" width={20} height={20} />}{player(playerId).name}</span>;
@@ -102,43 +140,41 @@ export function ReplayView({ match, map }: { match: ValorantMatch; map: MatchMap
       <h5><span className={`${styles.smallCrest} ${styles[team.crest]}`} aria-hidden="true" />{team.name}<span className={styles[`${index === attackers ? "attack" : "defense"}Text`]}>{SIDE_LABEL[index === attackers ? "attack" : "defense"]}</span></h5>
       <ul>{map.stats.filter((stats) => teamIndex(stats.playerId) === index).map((stats) => {
         const economy = round.economy[stats.playerId];
-        return <li key={stats.playerId} className={dead.has(stats.playerId) || (focus.has(stats.playerId) && victim?.playerId === stats.playerId) ? styles.replayDead : ""}>
+        return <li key={stats.playerId} className={dead.has(stats.playerId) ? styles.replayDead : ""}>
           {agentOf(stats.playerId) && <Image src={agentOf(stats.playerId)!.icon} alt="" width={22} height={22} />}<span>{player(stats.playerId).name}</span>
           <small title="Valor do equipamento">{credits(economy?.loadout ?? 0)}</small><small title="Créditos restantes">{credits(economy?.bank ?? 0)}</small>
         </li>;
       })}</ul>
     </div>)}</div>
 
-    <div className={styles.replayStage}>
-      <div className={styles.replayMap}>
-        <Image src={`/minimaps/${map.id}.png`} alt={`Minimapa de ${map.name}`} fill sizes="(max-width: 900px) 100vw, 520px" unoptimized />
-        <svg viewBox="0 0 1000 1000" className={styles.replayLines} aria-hidden="true">
-          {killer && victim && <line x1={killer.x * 1000} y1={killer.y * 1000} x2={victim.x * 1000} y2={victim.y * 1000} className={styles[`${sideOf(killer.playerId)}Line`]} />}
-        </svg>
-        {[...dead.values()].filter((marker) => !snapshot.some((entry) => entry.playerId === marker.playerId)).map((marker) => <span key={`dead-${marker.playerId}`} className={styles.replayCorpse} style={{ left: `${marker.x * 100}%`, top: `${marker.y * 100}%` }} title={`${player(marker.playerId).name} (morto)`}>✕</span>)}
-        {snapshot.map((marker) => {
-          const agent = agentOf(marker.playerId);
-          const isVictim = marker.facing === null;
-          return <span key={marker.playerId} className={`${styles.replayMarker} ${styles[`${sideOf(marker.playerId)}Marker`]} ${isVictim ? styles.victimMarker : ""} ${focus.has(marker.playerId) ? styles.focusMarker : ""}`} style={{ left: `${marker.x * 100}%`, top: `${marker.y * 100}%` }} title={player(marker.playerId).name}>
-            {marker.facing !== null && <i className={styles.replayFacing} style={{ transform: `rotate(${marker.facing}deg)` }} aria-hidden="true" />}
-            {agent && <Image src={agent.icon} alt="" width={26} height={26} />}
-          </span>;
-        })}
+    <div className={styles.replayTransport}>
+      <div className={styles.replayControls}>
+        <button type="button" onClick={() => seek(frames[frameIndex - 1].time)} disabled={frameIndex === 0} aria-label="Evento anterior">‹</button>
+        <button type="button" onClick={togglePlayback} aria-pressed={playing}>{playing ? "Pausar" : "Reproduzir"}</button>
+        <button type="button" onClick={() => seek(frames[frameIndex + 1].time)} disabled={frameIndex === frames.length - 1} aria-label="Próximo evento">›</button>
       </div>
+      <label className={styles.replaySpeed}>Velocidade <select aria-label="Velocidade do replay" value={speed} onChange={(event) => setSpeed(Number(event.target.value))}>
+        {[.5, 1, 2, 4].map((value) => <option key={value} value={value}>{value.toLocaleString("pt-BR")}×</option>)}
+      </select></label>
+      <time className={styles.replayClock}>{clock(time)} / {clock(endTime)}</time>
+      <div className={styles.replayScrubber}>
+        <input type="range" aria-label="Tempo do round" aria-valuetext={`${clock(time)} de ${clock(endTime)}`} min={startTime} max={endTime} step="0.05" value={time} onChange={(event) => seek(Number(event.target.value))} disabled={startTime === endTime} />
+        <div aria-hidden="true">{frames.map((entry) => <i key={entry.time} style={{ left: `${(entry.time - startTime) / (endTime - startTime || 1) * 100}%` }} />)}</div>
+      </div>
+    </div>
+
+    <div className={styles.replayStage}>
+      <ReplayStage key={round.number} ref={stage} mapId={map.id} mapName={map.name} round={round} frames={frames} players={stagePlayers} reducedMotion={reducedMotion} />
 
       <div className={styles.replayEvents}>
-        <div className={styles.replayControls}>
-          <button type="button" onClick={() => setEventIndex(Math.max(0, eventIndex - 1))} disabled={eventIndex === 0} aria-label="Evento anterior">‹</button>
-          <button type="button" onClick={() => setPlaying(!playing)} aria-pressed={playing}>{playing ? "Pausar" : "Reproduzir"}</button>
-          <button type="button" onClick={() => setEventIndex(Math.min(round.events.length - 1, eventIndex + 1))} disabled={eventIndex === round.events.length - 1} aria-label="Próximo evento">›</button>
-        </div>
+        <h5 className={styles.replayLogHeading}>Eventos do round <span>{clock(startTime)}–{clock(endTime)}</span></h5>
         <ol aria-label={`Eventos do round ${round.number}`}>{round.events.map((entry, index) => <li key={index}>
-          <button type="button" aria-current={index === eventIndex ? "step" : undefined} className={index === eventIndex ? styles.currentEvent : ""} onClick={() => { setEventIndex(index); setPlaying(false); }} aria-label={`${clock(entry.time)} · ${text(entry)}`}>
+          <button type="button" aria-current={entry.time === frame.time ? "step" : undefined} className={entry.time === frame.time ? styles.currentEvent : ""} onClick={() => seek(entry.time)} aria-label={`${clock(entry.time)} · ${text(entry)}`}>
             <time>{clock(entry.time)}</time><span className={styles.replayEventText}>{describe(entry)}</span>
           </button>
         </li>)}</ol>
       </div>
     </div>
-    <p className={styles.viewNote}>Posições do Tracker no instante de cada evento. A seta indica para onde o jogador olhava; ✕ marca quem já morreu. Cores pelo lado no round: vermelho no ataque, verde-água na defesa. Abates no mesmo segundo podem repetir a mesma foto.</p>
+    <p className={styles.viewNote}>Posições registradas pelo Tracker nos eventos; o movimento entre elas é aproximado e não mostra o caminho exato. A reprodução começa no primeiro registro do round. Linhas tracejadas indicam abates por habilidade sem identificação do efeito. ✕ marca mortes; vermelho é ataque e verde-água, defesa.{reducedMotion ? " Movimento reduzido ativo: posições exibidas por evento." : ""}</p>
   </div>;
 }

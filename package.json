@@ -11,7 +11,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
-    "vlr:validate": "node --experimental-strip-types scripts/validate-vlr.mjs && node --experimental-strip-types scripts/validate-rating.mjs && node --experimental-strip-types scripts/validate-player-stats.mjs && node --experimental-strip-types scripts/validate-tracker-rounds.mjs",
+    "vlr:validate": "node --experimental-strip-types scripts/validate-vlr.mjs && node --experimental-strip-types scripts/validate-rating.mjs && node --experimental-strip-types scripts/validate-player-stats.mjs && node --experimental-strip-types scripts/validate-tracker-rounds.mjs && node --experimental-strip-types scripts/validate-replay.mjs",
     "rating:calibrate": "node scripts/calibrate-vlr-rating.mjs",
     "rating:check": "node scripts/calibrate-vlr-rating.mjs --check",
     "db:generate": "drizzle-kit generate"
