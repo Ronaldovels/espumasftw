@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import { detailedRounds } from "../lib/vlr/performance.ts";
 import { replayFrameIndex, replayFrames, replayMarkers } from "../lib/vlr/replay.ts";
-import { plausibleWalkingPath, pointAlongPath, replayNavigation, traversableSegment, walkableSegment, walkingPath } from "../lib/vlr/navigation.ts";
+import { plausibleWalkingPath, pointAlongPath, replayNavigation, samplePath, traversableSegment, walkableSegment, walkingPath } from "../lib/vlr/navigation.ts";
+import { planReplayInterval } from "../lib/vlr/replay-planner.ts";
 
 const corridor = { size: 7, walkable: new Uint8Array(49).fill(1) };
 for (let y = 0; y < 5; y++) corridor.walkable[y * 7 + 3] = 0;
@@ -58,7 +59,24 @@ assert.deepEqual(replayMarkers(frames, 100), frames.at(-1).markers);
 assert.deepEqual(replayMarkers([], 10), []);
 const unresolved = replayFrames(fixture, "unknown-map");
 assert.equal(replayMarkers(unresolved, 15).find((entry) => entry.playerId === "a").x, .2, "Missing geometry holds the observation instead of crossing terrain");
-assert(replayMarkers(unresolved, 19.9).find((entry) => entry.playerId === "a").opacity < .1, "Unresolvable movement fades before the next observation");
+assert.equal(replayMarkers(unresolved, 15).find((entry) => entry.playerId === "a").opacity, 0, "An unknown middle position is not invented");
+assert.equal(replayMarkers(unresolved, 19.9).find((entry) => entry.playerId === "a").x, .4, "The next observation fades in at its recorded position");
+
+const portalGrid = { size: 10, walkable: new Uint8Array(100).fill(1), links: [{ id: "one-way", kind: "teleport", from: 21, to: 87 }] };
+portalGrid.walkable.fill(0, 40, 50);
+const portalPath = walkingPath(portalGrid, { x: .15, y: .25 }, { x: .75, y: .85 });
+assert(portalPath.segments.includes("teleport"));
+assert.equal(walkingPath(portalGrid, { x: .75, y: .85 }, { x: .15, y: .25 }), null, "One-way TPs cannot run backwards");
+for (let i = 0; i <= 200; i++) {
+  const point = samplePath(portalPath, i / 200, 10);
+  assert(point.y < .4 || point.y > .5, "Teleportation never interpolates across the void");
+}
+const encounterGrid = { size: 10, walkable: new Uint8Array(100).fill(1), metersToMapUnits: .05 };
+const encounterFrom = [{ ...marker("a", .1), dead: false }, { ...marker("e", .5), dead: false }];
+const encounterTo = [{ ...marker("a", .9), dead: false }, encounterFrom[1]];
+assert.equal(planReplayInterval(encounterGrid, encounterFrom, encounterTo, 10, { a: "one", e: "two" }, new Set()).a.reason, "enemy-conflict", "An unrecorded mid-journey enemy pass-through is uncertain");
+assert(planReplayInterval(encounterGrid, encounterFrom, encounterTo, 10, { a: "one", e: "two" }, new Set(["a|e"])).a.route, "A recorded duel can legitimately bring enemies together");
+assert(planReplayInterval(encounterGrid, encounterFrom, encounterTo, 10, { a: "one", e: "one" }, new Set()).a.route, "Teammates can cross paths");
 
 const read = async (directory, file) => JSON.parse(await readFile(new URL(`${directory}${file}`, import.meta.url), "utf8"));
 const matches = await Promise.all((await readdir(new URL("../data/vlr/", import.meta.url))).filter((file) => file.endsWith(".json")).map((file) => read("../data/vlr/", file)));
@@ -69,7 +87,7 @@ for (const file of (await readdir(new URL("../data/tracker-rounds/", import.meta
   const match = matches.find((entry) => entry.id === tracker.matchId);
   const map = { ...match.maps.find((entry) => entry.id === tracker.map), tracker };
   for (const round of detailedRounds(match, map)) {
-    const timeline = replayFrames(round, map.id);
+    const timeline = replayFrames(round, map.id, Object.fromEntries(match.players.map((player) => [player.id, player.teamId])));
     const grid = replayNavigation(map.id);
     assert(grid, `${file}: navigation is available`);
     if (map.id === "bind" && round.number === 1) {
@@ -89,6 +107,11 @@ for (const file of (await readdir(new URL("../data/tracker-rounds/", import.meta
       assert(death.markers.find((entry) => entry.playerId === "maopyk").dead, "Brimstone still dies at the recorded instant");
       assert(!replayMarkers(timeline, 35.99).find((entry) => entry.playerId === "maopyk").dead, "The drop does not anticipate the death");
     }
+    if (map.id === "bind" && round.number === 16) {
+      assert(timeline.find((frame) => frame.time === 26).paths["israel-games"].segments.includes("teleport"), "Phoenix rotates through the map TP instead of the defenders' route");
+      assert(timeline.find((frame) => frame.time === 45).paths["persa-faz-22"].segments.includes("drop"), "Chamber leaves A Heaven through its drop");
+    }
+    if (map.id === "bind" && round.number === 17) assert(timeline.find((frame) => frame.time === 69).paths["i-wonder-why"].segments.includes("teleport"), "Clove reaches A Bath through the TP instead of walking through Fade");
     for (const [index, frame] of timeline.entries()) {
       for (const route of Object.values(frame.paths)) if (route) {
         for (let i = 1; i < route.points.length; i++) assert(traversableSegment(grid, route.points[i - 1], route.points[i], route.segments[i - 1]), `${file} R${round.number}: only walking floors or explicitly mapped directional drops`);
@@ -106,6 +129,7 @@ for (const file of (await readdir(new URL("../data/tracker-rounds/", import.meta
         if (entry.dead) assert.deepEqual(entry, frame.markers.find((other) => other.playerId === entry.playerId), "No moving bodies");
         else if (frame.paths[entry.playerId] && !walkableSegment(grid, entry, entry)) {
           const route = frame.paths[entry.playerId];
+          if (route.length === 0) continue; // Unchanged recorded position, not an inferred displacement.
           assert(route.points.slice(1).some((to, i) => {
             const from = route.points[i];
             return route.segments[i] === "drop" && Math.abs(Math.hypot(entry.x - from.x, entry.y - from.y) + Math.hypot(entry.x - to.x, entry.y - to.y) - Math.hypot(to.x - from.x, to.y - from.y)) < 1e-8;
@@ -116,4 +140,4 @@ for (const file of (await readdir(new URL("../data/tracker-rounds/", import.meta
     count++;
   }
 }
-console.log(`Replay: ${count} rounds, ${paths} routes verified; walls, Hookah drops, detour timing, Bind Clove/Skye rotation, deaths, resurrection and reduced motion passed.`);
+console.log(`Replay: ${count} rounds, ${paths} routes verified; directed TPs, Heaven/Hookah drops, unknown gaps, encounter coherence, timing, deaths and reduced motion passed.`);

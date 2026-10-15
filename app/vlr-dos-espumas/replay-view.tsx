@@ -35,7 +35,7 @@ export function ReplayView({ match, map }: { match: ValorantMatch; map: MatchMap
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(2);
   const round = rounds[roundIndex];
-  const frames = useMemo(() => round ? replayFrames(round, map.id) : [], [round, map.id]);
+  const frames = useMemo(() => round ? replayFrames(round, map.id, Object.fromEntries(match.players.map((player) => [player.id, player.teamId]))) : [], [round, map.id, match.players]);
   const startTime = frames[0]?.time ?? 0;
   const endTime = frames.at(-1)?.time ?? startTime;
   const [time, setTime] = useState(startTime);
@@ -175,6 +175,6 @@ export function ReplayView({ match, map }: { match: ValorantMatch; map: MatchMap
         </li>)}</ol>
       </div>
     </div>
-    <p className={styles.viewNote}>Posições registradas pelo Tracker nos eventos; as rotas entre elas são estimadas pelas passagens do minimapa e não mostram o caminho exato. A reprodução começa no primeiro registro do round. Linhas tracejadas indicam abates por habilidade sem identificação do efeito. ✕ marca mortes; vermelho é ataque e verde-água, defesa.{reducedMotion ? " Movimento reduzido ativo: posições exibidas por evento." : ""}</p>
+    <p className={styles.viewNote}>Posições registradas pelo Tracker nos eventos; rotas, quedas e uso dos TPs são estimados. TP indica uma passagem pelo teleporte; ? indica uma transição sem trajeto confiável. Nesses intervalos, mostramos as posições conhecidas sem inventar o percurso. A reprodução começa no primeiro registro do round. Linhas tracejadas indicam abates por habilidade sem identificação do efeito. ✕ marca mortes; vermelho é ataque e verde-água, defesa.{reducedMotion ? " Movimento reduzido ativo: posições exibidas por evento." : ""}</p>
   </div>;
 }

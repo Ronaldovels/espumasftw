@@ -1,22 +1,25 @@
 import type { DetailedRound, MapMarker } from "./performance";
-import { plausibleWalkingPath, pointAlongPath, replayNavigation, walkingPath, type ReplayPath } from "./navigation.ts";
+import { replayNavigation, samplePath, type MovementKind, type ReplayPath } from "./navigation.ts";
+import { planReplayInterval, type RouteDecision } from "./replay-planner.ts";
 
-export type ReplayMarker = MapMarker & { dead: boolean; opacity?: number };
-export type ReplayFrame = { time: number; markers: ReplayMarker[]; eventIndex: number; paths?: Record<string, ReplayPath | null> };
+export type ReplayMarker = MapMarker & { dead: boolean; opacity?: number; movement?: MovementKind | "unknown" };
+export type ReplayFrame = { time: number; markers: ReplayMarker[]; eventIndex: number; paths?: Record<string, ReplayPath | null>; decisions?: Record<string, RouteDecision>; observedPlayers: string[] };
 
 // Events in the same second share a keyframe. Keep all their deaths, even when
 // Tracker repeats a snapshot that still shows an earlier victim as alive.
-export function replayFrames(round: DetailedRound, mapId?: string): ReplayFrame[] {
+export function replayFrames(round: DetailedRound, mapId?: string, teams: Record<string, string> = {}): ReplayFrame[] {
   const frames: ReplayFrame[] = [];
   const known = new Map<string, ReplayMarker>();
   const ordered = round.events.map((event, index) => ({ event, index })).sort((a, b) => a.event.time - b.event.time || a.index - b.index);
   for (let cursor = 0; cursor < ordered.length;) {
     const time = ordered[cursor].event.time;
     const deaths = new Set<string>();
+    const observed = new Set<string>();
     let eventIndex = ordered[cursor].index;
     while (cursor < ordered.length && ordered[cursor].event.time === time) {
       const { event, index } = ordered[cursor++];
       for (const marker of round.snapshots?.[index] ?? []) {
+        observed.add(marker.playerId);
         // A later live observation can represent a resurrection (e.g. Clove).
         known.set(marker.playerId, { ...marker, dead: marker.facing === null });
       }
@@ -27,18 +30,23 @@ export function replayFrames(round: DetailedRound, mapId?: string): ReplayFrame[
       const marker = known.get(id);
       if (marker) known.set(id, { ...marker, dead: true, facing: null });
     }
-    frames.push({ time, eventIndex, markers: [...known.values()] });
+    frames.push({ time, eventIndex, markers: [...known.values()], observedPlayers: [...observed] });
   }
   if (mapId) {
     const grid = replayNavigation(mapId);
     frames.forEach((frame, index) => {
       frame.paths = {};
-      for (const marker of frame.markers) {
-        const target = frames[index + 1]?.markers.find((entry) => entry.playerId === marker.playerId);
-        if (target && !marker.dead) {
-          const route = grid ? walkingPath(grid, marker, target) : null;
-          frame.paths[marker.playerId] = grid && route && plausibleWalkingPath(grid, route, marker, target, frames[index + 1].time - frame.time) ? route : null;
-        }
+      const next = frames[index + 1];
+      if (!next) return;
+      const duels = new Set<string>();
+      for (const event of round.events) if (event.type === "kill" && (event.time === frame.time || event.time === next.time)) {
+        duels.add(`${event.killer}|${event.victim}`); duels.add(`${event.victim}|${event.killer}`);
+      }
+      const confirmed = frame.markers.filter((marker) => frame.observedPlayers.includes(marker.playerId) && next.observedPlayers.includes(marker.playerId));
+      frame.decisions = grid ? planReplayInterval(grid, confirmed, next.markers, next.time - frame.time, teams, duels) : {};
+      for (const marker of frame.markers) if (!marker.dead && next.markers.some((entry) => entry.playerId === marker.playerId)) {
+        if (!frame.decisions[marker.playerId]) frame.decisions[marker.playerId] = { reason: grid ? "missing-observation" : "missing-geometry", route: null };
+        frame.paths[marker.playerId] = frame.decisions[marker.playerId]?.route ?? null;
       }
     });
   }
@@ -71,12 +79,18 @@ export function replayMarkers(frames: ReplayFrame[], time: number, smooth = true
     const angle = marker.facing !== null && target.facing !== null
       ? marker.facing + (((target.facing - marker.facing + 540) % 360) - 180) * progress
       : marker.facing;
+    if (Math.hypot(target.x - marker.x, target.y - marker.y) < .0005 && target.dead === marker.dead) return { ...marker, facing: angle };
     if (from.paths) {
       const route = from.paths[marker.playerId];
-      // An unresolvable/off-map observation must never become a straight-line
-      // flight through walls. Hold, fade, then show the next recorded position.
-      if (!route) return { ...marker, opacity: 1 - Math.max(0, (progress - .8) / .2) };
-      return { ...marker, ...pointAlongPath(route, progress), facing: angle };
+      // Uncertain gaps are not animations of a made-up route. Fade the last
+      // observation, then reveal the next one without advancing death state.
+      if (!route) {
+        const elapsed = time - from.time, remaining = to.time - time;
+        const fade = Math.min(.6, (to.time - from.time) / 3);
+        const arrival = remaining < fade;
+        return { ...marker, x: arrival ? target.x : marker.x, y: arrival ? target.y : marker.y, movement: "unknown", opacity: arrival ? 1 - remaining / fade : Math.max(0, 1 - elapsed / fade) };
+      }
+      return { ...marker, ...samplePath(route, progress, to.time - from.time), facing: angle };
     }
     return { ...marker, x: marker.x + (target.x - marker.x) * progress, y: marker.y + (target.y - marker.y) * progress, facing: angle };
   });

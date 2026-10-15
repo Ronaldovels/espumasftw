@@ -834,6 +834,78 @@
           "kind": "drop",
           "from": 24147,
           "to": 23379
+        },
+        {
+          "id": "a-heaven-to-site",
+          "kind": "drop",
+          "from": 15036,
+          "to": 17596
+        },
+        {
+          "id": "a-heaven-to-site",
+          "kind": "drop",
+          "from": 15037,
+          "to": 17597
+        },
+        {
+          "id": "a-heaven-to-site",
+          "kind": "drop",
+          "from": 15038,
+          "to": 17598
+        },
+        {
+          "id": "a-heaven-to-site",
+          "kind": "drop",
+          "from": 15039,
+          "to": 17599
+        },
+        {
+          "id": "a-heaven-to-site",
+          "kind": "drop",
+          "from": 15040,
+          "to": 17600
+        },
+        {
+          "id": "a-heaven-to-site",
+          "kind": "drop",
+          "from": 15041,
+          "to": 17601
+        },
+        {
+          "id": "a-heaven-to-site",
+          "kind": "drop",
+          "from": 15042,
+          "to": 17602
+        },
+        {
+          "id": "a-heaven-to-site",
+          "kind": "drop",
+          "from": 15043,
+          "to": 17603
+        },
+        {
+          "id": "a-heaven-to-site",
+          "kind": "drop",
+          "from": 15044,
+          "to": 17604
+        },
+        {
+          "id": "a-heaven-to-site",
+          "kind": "drop",
+          "from": 15045,
+          "to": 17605
+        },
+        {
+          "id": "b-long-to-a-bath",
+          "kind": "teleport",
+          "from": 28454,
+          "to": 34284
+        },
+        {
+          "id": "a-short-to-b-short",
+          "kind": "teleport",
+          "from": 27035,
+          "to": 29049
         }
       ]
     },

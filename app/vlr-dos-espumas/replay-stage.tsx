@@ -38,6 +38,7 @@ export function ReplayStage({ ref, mapId, mapName, round, frames, players, reduc
         // The wrapper fills the map, so transform percentages are map coordinates.
         node.style.transform = `translate(${marker.x * 100}%, ${marker.y * 100}%)`;
         node.dataset.dead = String(marker.dead);
+        node.dataset.movement = marker.movement ?? "walk";
         const facing = facingNodes.current.get(player.id);
         if (facing) {
           facing.style.opacity = marker.dead || marker.facing === null ? "0" : "1";
@@ -94,6 +95,8 @@ export function ReplayStage({ ref, mapId, mapName, round, frames, players, reduc
             style={{ opacity: marker?.dead || marker?.facing === null ? 0 : 1, transform: `rotate(${marker?.facing ?? 0}deg)` }} aria-hidden="true" />
           {player.icon && <Image src={player.icon} alt={player.name} width={26} height={26} />}
           <b className={styles.replayDeathMark} aria-hidden="true">✕</b>
+          <small className={styles.replayTeleportHint} title="Passagem estimada pelo TP do mapa" aria-hidden="true">TP</small>
+          <small className={styles.replayUnknownHint} title="Posição intermediária desconhecida" aria-hidden="true">?</small>
         </span>
       </div>;
     })}
