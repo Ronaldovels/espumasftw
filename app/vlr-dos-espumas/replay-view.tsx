@@ -35,7 +35,7 @@ export function ReplayView({ match, map }: { match: ValorantMatch; map: MatchMap
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(2);
   const round = rounds[roundIndex];
-  const frames = useMemo(() => round ? replayFrames(round) : [], [round]);
+  const frames = useMemo(() => round ? replayFrames(round, map.id) : [], [round, map.id]);
   const startTime = frames[0]?.time ?? 0;
   const endTime = frames.at(-1)?.time ?? startTime;
   const [time, setTime] = useState(startTime);
@@ -175,6 +175,6 @@ export function ReplayView({ match, map }: { match: ValorantMatch; map: MatchMap
         </li>)}</ol>
       </div>
     </div>
-    <p className={styles.viewNote}>Posições registradas pelo Tracker nos eventos; o movimento entre elas é aproximado e não mostra o caminho exato. A reprodução começa no primeiro registro do round. Linhas tracejadas indicam abates por habilidade sem identificação do efeito. ✕ marca mortes; vermelho é ataque e verde-água, defesa.{reducedMotion ? " Movimento reduzido ativo: posições exibidas por evento." : ""}</p>
+    <p className={styles.viewNote}>Posições registradas pelo Tracker nos eventos; as rotas entre elas são estimadas pelos corredores do minimapa e não mostram o caminho exato. A reprodução começa no primeiro registro do round. Linhas tracejadas indicam abates por habilidade sem identificação do efeito. ✕ marca mortes; vermelho é ataque e verde-água, defesa.{reducedMotion ? " Movimento reduzido ativo: posições exibidas por evento." : ""}</p>
   </div>;
 }

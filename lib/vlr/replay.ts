@@ -1,11 +1,12 @@
 import type { DetailedRound, MapMarker } from "./performance";
+import { pointAlongPath, replayNavigation, walkingPath, type ReplayPath } from "./navigation.ts";
 
-export type ReplayMarker = MapMarker & { dead: boolean };
-export type ReplayFrame = { time: number; markers: ReplayMarker[]; eventIndex: number };
+export type ReplayMarker = MapMarker & { dead: boolean; opacity?: number };
+export type ReplayFrame = { time: number; markers: ReplayMarker[]; eventIndex: number; paths?: Record<string, ReplayPath | null> };
 
 // Events in the same second share a keyframe. Keep all their deaths, even when
 // Tracker repeats a snapshot that still shows an earlier victim as alive.
-export function replayFrames(round: DetailedRound): ReplayFrame[] {
+export function replayFrames(round: DetailedRound, mapId?: string): ReplayFrame[] {
   const frames: ReplayFrame[] = [];
   const known = new Map<string, ReplayMarker>();
   const ordered = round.events.map((event, index) => ({ event, index })).sort((a, b) => a.event.time - b.event.time || a.index - b.index);
@@ -27,6 +28,16 @@ export function replayFrames(round: DetailedRound): ReplayFrame[] {
       if (marker) known.set(id, { ...marker, dead: true, facing: null });
     }
     frames.push({ time, eventIndex, markers: [...known.values()] });
+  }
+  if (mapId) {
+    const grid = replayNavigation(mapId);
+    frames.forEach((frame, index) => {
+      frame.paths = {};
+      for (const marker of frame.markers) {
+        const target = frames[index + 1]?.markers.find((entry) => entry.playerId === marker.playerId);
+        if (target && !marker.dead) frame.paths[marker.playerId] = grid ? walkingPath(grid, marker, target) : null;
+      }
+    });
   }
   return frames;
 }
@@ -57,6 +68,13 @@ export function replayMarkers(frames: ReplayFrame[], time: number, smooth = true
     const angle = marker.facing !== null && target.facing !== null
       ? marker.facing + (((target.facing - marker.facing + 540) % 360) - 180) * progress
       : marker.facing;
+    if (from.paths) {
+      const route = from.paths[marker.playerId];
+      // An unresolvable/off-map observation must never become a straight-line
+      // flight through walls. Hold, fade, then show the next recorded position.
+      if (!route) return { ...marker, opacity: 1 - Math.max(0, (progress - .8) / .2) };
+      return { ...marker, ...pointAlongPath(route, progress), facing: angle };
+    }
     return { ...marker, x: marker.x + (target.x - marker.x) * progress, y: marker.y + (target.y - marker.y) * progress, facing: angle };
   });
 }

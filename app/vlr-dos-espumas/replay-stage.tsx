@@ -33,7 +33,7 @@ export function ReplayStage({ ref, mapId, mapName, round, frames, players, reduc
         const node = markerNodes.current.get(player.id);
         const marker = markers.find((entry) => entry.playerId === player.id);
         if (!node) continue;
-        node.style.opacity = marker ? "1" : "0";
+        node.style.opacity = marker ? String(marker.opacity ?? 1) : "0";
         if (!marker) continue;
         // The wrapper fills the map, so transform percentages are map coordinates.
         node.style.transform = `translate(${marker.x * 100}%, ${marker.y * 100}%)`;
