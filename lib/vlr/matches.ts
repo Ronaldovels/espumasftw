@@ -1,4 +1,5 @@
 import firstMatch from "@/data/vlr/espumas-esponjas-2026-10-07.json";
+import esponjasRematch from "@/data/vlr/espumas-esponjas-2026-10-14.json";
 import buchas from "@/data/vlr/espumas-buchas-2026-10-13.json";
 import loucas from "@/data/vlr/espumas-loucas-2026-10-13.json";
 import molhados from "@/data/vlr/espumas-molhados-2026-10-13.json";
@@ -8,11 +9,13 @@ import summitRounds from "@/data/tracker-rounds/summit-2026-10-07.json";
 import lotusRounds from "@/data/tracker-rounds/lotus-2026-10-13.json";
 import havenRounds from "@/data/tracker-rounds/haven-2026-10-13.json";
 import abyssRounds from "@/data/tracker-rounds/abyss-2026-10-13.json";
+import corrodeRounds from "@/data/tracker-rounds/corrode-2026-10-14.json";
+import bindRounds from "@/data/tracker-rounds/bind-2026-10-14.json";
 import type { TrackerRounds, ValorantMatch } from "./types";
 
-export const matches: ValorantMatch[] = [molhados, loucas, buchas, firstMatch].map((match) => match as unknown as ValorantMatch).sort((a, b) => b.date.localeCompare(a.date));
+export const matches: ValorantMatch[] = [esponjasRematch, molhados, loucas, buchas, firstMatch].map((match) => match as unknown as ValorantMatch).sort((a, b) => b.date.localeCompare(a.date));
 
-const trackerRounds: TrackerRounds[] = [ascentRounds, splitRounds, summitRounds, lotusRounds, havenRounds, abyssRounds];
+const trackerRounds: TrackerRounds[] = [ascentRounds, splitRounds, summitRounds, lotusRounds, havenRounds, abyssRounds, corrodeRounds, bindRounds];
 
 // Round-by-round Tracker data is only needed on the match page, so it is attached there.
 export function withTrackerRounds(match: ValorantMatch): ValorantMatch {

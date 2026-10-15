@@ -1,0 +1,531 @@
+{
+  "id": "espumas-esponjas-2026-10-14",
+  "date": "2026-10-14",
+  "event": "Partida personalizada",
+  "format": "Personalizada",
+  "sourceUrl": "https://tracker.gg/valorant/profile/riot/intertwined%23anaju/customs?platform=pc&playlist=competitive&season=d816f426-48ea-f052-117f-9697a155b319",
+  "contextUrl": "https://tracker.gg/valorant/profile/riot/intertwined%23anaju/customs?platform=pc&playlist=competitive&season=d816f426-48ea-f052-117f-9697a155b319",
+  "ratingNote": "Rating Espumas v1: estimativa calibrada com ratings VLR 2.0 de partidas profissionais. Usa eliminações, mortes, assistências e primeiras mortes por round, ADR e ACS. O rating geral pondera os mapas pelos rounds, sem arredondamento intermediário. Trocas, economia e contexto das eliminações não são reconstruídos a partir dos totais.",
+  "teams": [
+    {
+      "id": "espumas",
+      "name": "Espumas",
+      "tag": "ESP",
+      "crest": "espumas"
+    },
+    {
+      "id": "esponjas",
+      "name": "Esponjas",
+      "tag": "ESN",
+      "crest": "esponjas"
+    }
+  ],
+  "players": [
+    {
+      "id": "intertwined",
+      "name": "intertwined",
+      "teamId": "espumas",
+      "riotId": "intertwined#anaju"
+    },
+    {
+      "id": "vls",
+      "name": "vls",
+      "teamId": "espumas",
+      "riotId": "vls#det"
+    },
+    {
+      "id": "maopyk",
+      "name": "Maopyk",
+      "teamId": "espumas",
+      "riotId": "Maopyk#piru"
+    },
+    {
+      "id": "laszo",
+      "name": "lsz",
+      "teamId": "espumas",
+      "riotId": "lsz#333"
+    },
+    {
+      "id": "felpao",
+      "name": "Felpao",
+      "teamId": "espumas",
+      "riotId": "Felpao#000"
+    },
+    {
+      "id": "israel-games",
+      "name": "Israel games",
+      "teamId": "esponjas",
+      "riotId": "Israel games#6742"
+    },
+    {
+      "id": "ieovah",
+      "name": "IEOVAH",
+      "teamId": "esponjas",
+      "riotId": "IEOVAH#GOD"
+    },
+    {
+      "id": "persa-faz-22",
+      "name": "persa",
+      "teamId": "esponjas",
+      "riotId": "persa#sccp"
+    },
+    {
+      "id": "gusta",
+      "name": "gusta",
+      "teamId": "esponjas",
+      "riotId": "水 gusta ヅ#CHORA"
+    },
+    {
+      "id": "i-wonder-why",
+      "name": "i wonder why",
+      "teamId": "esponjas",
+      "riotId": "i wonder why#xxx"
+    }
+  ],
+  "maps": [
+    {
+      "id": "corrode",
+      "name": "Corrode",
+      "score": [
+        7,
+        13
+      ],
+      "durationSeconds": 2207,
+      "sourceUrl": "https://tracker.gg/valorant/match/8243aaf4-9a2b-4adc-8125-812ae860a5ec",
+      "rounds": [
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "detonate"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "defuse"
+        }
+      ],
+      "stats": [
+        {
+          "playerId": "intertwined",
+          "agent": "Chamber",
+          "acs": 302,
+          "kills": 24,
+          "deaths": 16,
+          "assists": 4,
+          "kast": 75,
+          "adr": 205.1,
+          "hs": 38,
+          "fk": 3,
+          "fd": 2
+        },
+        {
+          "playerId": "vls",
+          "agent": "Waylay",
+          "acs": 223,
+          "kills": 14,
+          "deaths": 18,
+          "assists": 4,
+          "kast": 65,
+          "adr": 144.8,
+          "hs": 35,
+          "fk": 6,
+          "fd": 1
+        },
+        {
+          "playerId": "maopyk",
+          "agent": "Omen",
+          "acs": 218,
+          "kills": 15,
+          "deaths": 16,
+          "assists": 9,
+          "kast": 70,
+          "adr": 140.9,
+          "hs": 37,
+          "fk": 0,
+          "fd": 3
+        },
+        {
+          "playerId": "laszo",
+          "agent": "Fade",
+          "acs": 150,
+          "kills": 8,
+          "deaths": 18,
+          "assists": 11,
+          "kast": 75,
+          "adr": 110.9,
+          "hs": 27,
+          "fk": 0,
+          "fd": 1
+        },
+        {
+          "playerId": "felpao",
+          "agent": "KAY/O",
+          "acs": 106,
+          "kills": 7,
+          "deaths": 17,
+          "assists": 3,
+          "kast": 60,
+          "adr": 77.3,
+          "hs": 28,
+          "fk": 2,
+          "fd": 2
+        },
+        {
+          "playerId": "ieovah",
+          "agent": "Waylay",
+          "acs": 297,
+          "kills": 21,
+          "deaths": 13,
+          "assists": 6,
+          "kast": 80,
+          "adr": 184.4,
+          "hs": 47,
+          "fk": 6,
+          "fd": 4
+        },
+        {
+          "playerId": "i-wonder-why",
+          "agent": "Clove",
+          "acs": 263,
+          "kills": 19,
+          "deaths": 16,
+          "assists": 12,
+          "kast": 80,
+          "adr": 169,
+          "hs": 38,
+          "fk": 0,
+          "fd": 0
+        },
+        {
+          "playerId": "israel-games",
+          "agent": "Vyse",
+          "acs": 244,
+          "kills": 18,
+          "deaths": 12,
+          "assists": 6,
+          "kast": 70,
+          "adr": 153.9,
+          "hs": 31,
+          "fk": 2,
+          "fd": 2
+        },
+        {
+          "playerId": "persa-faz-22",
+          "agent": "Yoru",
+          "acs": 205,
+          "kills": 14,
+          "deaths": 17,
+          "assists": 6,
+          "kast": 65,
+          "adr": 114.3,
+          "hs": 33,
+          "fk": 1,
+          "fd": 4
+        },
+        {
+          "playerId": "gusta",
+          "agent": "Fade",
+          "acs": 163,
+          "kills": 13,
+          "deaths": 10,
+          "assists": 9,
+          "kast": 70,
+          "adr": 107.4,
+          "hs": 35,
+          "fk": 0,
+          "fd": 1
+        }
+      ]
+    },
+    {
+      "id": "bind",
+      "name": "Bind",
+      "score": [
+        13,
+        6
+      ],
+      "durationSeconds": 2167,
+      "sourceUrl": "https://tracker.gg/valorant/match/369a3f8e-37be-4348-832d-8e16e8708e18",
+      "rounds": [
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "detonate"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "detonate"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "detonate"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "esponjas",
+          "outcome": "elimination"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "time"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "defuse"
+        },
+        {
+          "winner": "espumas",
+          "outcome": "elimination"
+        }
+      ],
+      "stats": [
+        {
+          "playerId": "intertwined",
+          "agent": "Chamber",
+          "acs": 406,
+          "kills": 29,
+          "deaths": 9,
+          "assists": 7,
+          "kast": 89,
+          "adr": 259.4,
+          "hs": 35,
+          "fk": 2,
+          "fd": 2
+        },
+        {
+          "playerId": "maopyk",
+          "agent": "Brimstone",
+          "acs": 251,
+          "kills": 16,
+          "deaths": 13,
+          "assists": 17,
+          "kast": 84,
+          "adr": 153.9,
+          "hs": 20,
+          "fk": 1,
+          "fd": 0
+        },
+        {
+          "playerId": "vls",
+          "agent": "Raze",
+          "acs": 233,
+          "kills": 16,
+          "deaths": 14,
+          "assists": 4,
+          "kast": 89,
+          "adr": 158.2,
+          "hs": 24,
+          "fk": 2,
+          "fd": 5
+        },
+        {
+          "playerId": "laszo",
+          "agent": "Fade",
+          "acs": 173,
+          "kills": 13,
+          "deaths": 13,
+          "assists": 7,
+          "kast": 84,
+          "adr": 104.3,
+          "hs": 19,
+          "fk": 0,
+          "fd": 2
+        },
+        {
+          "playerId": "felpao",
+          "agent": "Gekko",
+          "acs": 79,
+          "kills": 4,
+          "deaths": 13,
+          "assists": 6,
+          "kast": 68,
+          "adr": 61.8,
+          "hs": 8,
+          "fk": 1,
+          "fd": 4
+        },
+        {
+          "playerId": "israel-games",
+          "agent": "Phoenix",
+          "acs": 269,
+          "kills": 18,
+          "deaths": 18,
+          "assists": 4,
+          "kast": 79,
+          "adr": 186.5,
+          "hs": 30,
+          "fk": 3,
+          "fd": 1
+        },
+        {
+          "playerId": "ieovah",
+          "agent": "Raze",
+          "acs": 266,
+          "kills": 17,
+          "deaths": 16,
+          "assists": 2,
+          "kast": 74,
+          "adr": 178.4,
+          "hs": 43,
+          "fk": 5,
+          "fd": 2
+        },
+        {
+          "playerId": "persa-faz-22",
+          "agent": "Chamber",
+          "acs": 221,
+          "kills": 14,
+          "deaths": 12,
+          "assists": 4,
+          "kast": 74,
+          "adr": 144,
+          "hs": 18,
+          "fk": 3,
+          "fd": 1
+        },
+        {
+          "playerId": "gusta",
+          "agent": "Skye",
+          "acs": 120,
+          "kills": 7,
+          "deaths": 15,
+          "assists": 6,
+          "kast": 58,
+          "adr": 76.8,
+          "hs": 15,
+          "fk": 1,
+          "fd": 1
+        },
+        {
+          "playerId": "i-wonder-why",
+          "agent": "Clove",
+          "acs": 80,
+          "kills": 6,
+          "deaths": 17,
+          "assists": 3,
+          "kast": 63,
+          "adr": 60.1,
+          "hs": 29,
+          "fk": 1,
+          "fd": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { matches } from "@/lib/vlr/matches";
+import { matches, withTrackerRounds } from "@/lib/vlr/matches";
 import { MatchPage } from "./match-page";
 
 export const metadata: Metadata = {
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function VlrPage() {
-  return <MatchPage match={matches[0]} />;
+  return <MatchPage match={withTrackerRounds(matches[0])} />;
 }
